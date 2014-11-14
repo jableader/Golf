@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Some stuff!</title>
+</head>
+<body>
+    <header class="page-header">
+        <img logo class="golf-logo" src="static/logo.png">
+
+        {% if user.is_authenticated %}
+            {% user.username %}
+            <!-- Logout -->
+        {% else %}
+            <!-- Login button -->
+        {% endif %}
+    </header>
+
+    {% block body_block %} No body found {% endblock %}
+</body>
+</html>

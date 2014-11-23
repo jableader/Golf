@@ -1,5 +1,10 @@
-{% extends Base.html %}
+{% extends 'Base.html' %}
 
 {% block body_block %}
-    <h1> Hello {% if user.is_authenticated %} {% user.username %} {% else  %} Friend {% endif %}! </h1>
+    <div class=""current-question">
+        <h2>Current Question:</h2>
+        <div>
+
+        </div>
+    </div>
 {% endblock %}

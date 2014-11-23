@@ -1,0 +1,24 @@
+header {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    height: 3ex;
+}
+
+.golf-logo {
+    width: 3ex;
+    height: 3ex;
+    
+}
+
+header ul {
+    list-style: None;
+    padding-left: 0px;
+    float: right;
+}
+
+.body_block {
+    position: relative;
+    top: 3ex;
+}

@@ -1,9 +1,15 @@
 {% extends 'base.html' %}
 
 {% block body_block %}
-    <div class="container-fluid">
-        <div class="row">
-            <h1>Welcome</h1>
+    <div class="container">
+        <div class="hero-unit">
+            {% if question %}
+                <h1><span class="half-size">Current Question</span> {{ question.title }}</h1>
+                <p>Log in to answer now!</p>
+            {% else %}
+                <h1>Welcome to UTS ProgSoc's Code Golf!</h1>
+                <p>There is currently no question, but feel free to view previous questions and responses</p>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

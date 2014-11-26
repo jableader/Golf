@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login, logout as logoutUser
 from django.shortcuts import RequestContext, render, redirect
 from django.views import generic
-from models import User
+from models import User, Question
 
 HOME = 'index'
 
@@ -9,12 +9,17 @@ def getNextUrl(request):
     if 'next' in request.GET: return request.GET['next']
     return HOME
 
+def question(request, question_pk):
+    raise Exception("Make a question page") #TODO
+
 def profile(request, user_pk):
     userToDisplay = User.objects.get(pk=user_pk)
     return render(request, 'profile.html', {'userToDisplay': userToDisplay})
 
 def index(request):
-    return render(request, 'index.html', {})
+    question = Question()
+    question.title = "Hello world"
+    return render(request, 'index.html', {'question': question})
 
 def login_form(request):
     if request.user.is_authenticated():

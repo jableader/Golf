@@ -7,11 +7,10 @@ urlpatterns = patterns('',
     # url(r'^$', 'golf.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 
-    url(r'^$', golfviews.home, name='home'),
-    url(r'^login$', golfviews.login_form, name='login'),
-    url(r'^logout$', golfviews.logout, name='logout'),
-    url(r'users/profile/$', golfviews.profile, name='profile'),
-
+    url(r'^$', golfviews.index, name='index'),
+    url(r'^login/$', golfviews.login_form, name='login'),
+    url(r'^logout/$', golfviews.logout, name='logout'),
+    url(r'^users/profile/(?P<user_pk>\d+)/$', golfviews.profile, name='profile'),
 
     url(r'^admin/', include(admin.site.urls)),
 )

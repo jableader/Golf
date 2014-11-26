@@ -13,34 +13,32 @@
     <title>Some stuff!</title>
 </head>
 <body>
-    <div class="container">
-        <div class="navbar navbar-default" role="navigation">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="{% url 'home' %}">Code Golf</a>
-                </div>
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav navbar-right">
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{% url 'index' %}">Code Golf</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
 
-                        {% if user.is_authenticated %}
-                            <li><a href="{% url 'profile' user.id %}">{{ user.username }}</a></li>
-                            <li><a href="{% url 'logout' %}">Logout</a></li>
-                        {% else %}
-                            <li><a href="{% url 'login' %}">Login</a></li>
-                        {% endif %}
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url 'profile' user.id %}">{{ user.username|title }}</a></li>
+                        <li><a href="{% url 'logout' %}">Logout</a></li>
+                    {% else %}
+                        <li><a href="{% url 'login' %}">Login</a></li>
+                    {% endif %}
 
-                    </ul>
-                </div>
+                </ul>
             </div>
         </div>
+    </nav>
 
-        {% block body_block %}
-            <div>
-                <h3>Awkies...</h3>
-                <em>You shouldn't see me</em>
-            </div>
-        {% endblock %}
-    </div>
+    {% block body_block %}
+        <div>
+            <h3>Awkies...</h3>
+            <em>You shouldn't see me</em>
+        </div>
+    {% endblock %}
 
 </body>
 </html>

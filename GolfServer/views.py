@@ -3,18 +3,18 @@ from django.shortcuts import RequestContext, render, redirect
 from django.views import generic
 from models import User
 
-HOME = 'home'
+HOME = 'index'
 
 def getNextUrl(request):
     if 'next' in request.GET: return request.GET['next']
     return HOME
 
-def profile(request, user_id):
-    i = 3/0 #How do I throw exceptions....
+def profile(request, user_pk):
+    userToDisplay = User.objects.get(pk=user_pk)
+    return render(request, 'profile.html', {'userToDisplay': userToDisplay})
 
-# Create your views here.
-def home(request):
-    return render(request, 'home.html', {})
+def index(request):
+    return render(request, 'index.html', {})
 
 def login_form(request):
     if request.user.is_authenticated():
@@ -25,7 +25,7 @@ def login_form(request):
             user = authenticate(username=request.POST['username'], password=request.POST['password'])
             if user is not None:
                 login(request, user)
-                return redirect(getNextUrl(request))
+                return redirect(getNextUrl(request), permanent=True)
             else:
                 hasTriedBefore = True
 
@@ -33,4 +33,4 @@ def login_form(request):
 
 def logout(request):
     logoutUser(request)
-    return redirect(HOME)
+    return redirect(HOME, permanent=True)

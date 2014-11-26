@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+    {% if userToDisplay %}
+        <h2>{{ userToDisplay.username|title }}</h2>
+
+    {% else %}
+        <h2>Sorry, this user could not be found</h2>
+    {% endif %}
+{% endblock %}

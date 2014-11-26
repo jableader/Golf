@@ -1,4 +1,28 @@
-.golf-logo {
-    width: 3ex;
-    height: 3ex;
+body {
+    padding-top: 50px;
+}
+
+.form-signin {
+    max-width: 20em;
+    margin: 0 auto;
+}
+
+.form-signin .form-header {
+    margin-bottom: 2ex;
+}
+
+.form-signin input[type="text"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: 3ex;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.form-signin button {
+    width: 50%;
+    margin: 0 auto;
 }

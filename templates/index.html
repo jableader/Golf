@@ -1,15 +1,52 @@
 {% extends 'base.html' %}
 
 {% block body_block %}
+    <div class="jumbotron">
+        <div class="container">
+            <h1>UTS ProgSoc's Code Golf</h1>
+            <p>
+                Challenge yourself and attempt to solve industry linked real programming
+                and computer science problems, and pick up some prizes along the way
+            </p>
+        </div>
+    </div>
+
     <div class="container">
-        <div class="hero-unit">
-            {% if question %}
-                <h1><span class="half-size">Current Question</span> {{ question.title }}</h1>
-                <p>Log in to answer now!</p>
-            {% else %}
-                <h1>Welcome to UTS ProgSoc's Code Golf!</h1>
-                <p>There is currently no question, but feel free to view previous questions and responses</p>
-            {% endif %}
+        <div class="row">
+            <div class="col-md-9">
+                {% if question %}
+                    <div class="page-header">
+                        <h2><small>Current Challenge</small><br /> {{ question.title }}</h2>
+                    </div>
+                    <p>{{ question.short_description }}</p>
+                    <div class="sponsor-flog">
+                        Sponsored by <br />
+                        <a href="{{ question.sponsor.website }}">
+                            <img src="{{ question.sponsor.logo.url }}" />
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="page-header">
+                        <h2><small>No current challenge</small></h2>
+                    </div>
+                    <p>
+                        Looks like there is active challenges right now. Feel free to check back here soon.
+                        In the meantime, why don't you view <a href="#">some previous challenges.</a>
+                    </p>
+                {% endif %}
+            </div>
+            <div class="col-md-3">
+                <h4>FAQ</h4>
+                <ul class="nav nav-pills nav-stacked">
+                    <li><a href="#">What is code golf?</a></li>
+                    <li><a href="#">What is UTS ProgSoc?</a></li>
+                    <li><a href="#">Why do we do this?</a></li>
+                    <li><a href="#">What's in it for me?</a></li>
+                    <li><a href="#">Where do the prizes come from?</a></li>
+                    <li><a href="#">Show me all your sponsors!</a></li>
+                    <li><a href="#">This is pretty cool, is there other places like this?</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 {% endblock %}

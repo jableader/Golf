@@ -18,7 +18,8 @@ def profile(request, user_pk):
 
 def index(request):
     question = Question()
-    question.title = "Hello world"
+    question.title = "Hello Code Golf!"
+    question.short_description = "Welcome ProgSoc's Code Golf into the world through a few warm and welcoming lines to stdout"
     return render(request, 'index.html', {'question': question})
 
 def login_form(request):

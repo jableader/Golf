@@ -1,5 +1,20 @@
 body {
     padding-top: 50px;
+    margin: 0 auto;
+}
+
+.banner-logo {
+    position: relative;
+    height: 4ex;
+    top:-1ex
+}
+
+.sponsor-flog {
+    right: 0px;
+    text-align: right;
+
+    color: gray;
+    font-style: oblique;
 }
 
 .form-signin {

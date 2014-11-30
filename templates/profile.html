@@ -1,10 +1,29 @@
 {% extends 'base.html' %}
 
 {% block body_block %}
-    {% if userToDisplay %}
-        <h2>{{ userToDisplay.username|title }}</h2>
+    <div class="container-fluid">
+        {% if userToDisplay %}
 
-    {% else %}
-        <h2>Sorry, this user could not be found</h2>
-    {% endif %}
+            <div class="row">
+                <div class="col-md-1">
+
+                </div>
+                <h2>{{ userToDisplay.username|title }}</h2>
+            </div>
+
+            <div class="row">
+                <div class="col-md-1">
+                    <h4>Submission Statistice</h4>
+                    <b>Questions attempted</b> {{ userToDisplay.profile.submissions|length }} <br />
+                    <b>Submissions</b> {{ userToDisplay.profile.submissions|length }} <br />
+                    <b>Winning submissions</b> A NUMBAH <br />
+                </div>
+                <div class="col-md-10">
+                    Some more information
+                </div>
+            </div>
+        {% else %}
+            <h2>Sorry, this user could not be found</h2>
+        {% endif %}
+    </div>
 {% endblock %}

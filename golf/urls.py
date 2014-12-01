@@ -1,6 +1,8 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from GolfServer import views as golfviews
+from django.conf.urls.static import static
+from . import settings
 
 urlpatterns = patterns('',
     # Examples:
@@ -13,4 +15,4 @@ urlpatterns = patterns('',
     url(r'^users/profile/(?P<user_pk>\d+)/$', golfviews.profile, name='profile'),
     url(r'^questions/(?P<question_pk>\d+)', golfviews.question, name='question'),
     url(r'^admin/', include(admin.site.urls)),
-)
+) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

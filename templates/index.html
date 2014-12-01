@@ -19,12 +19,12 @@
                         <h2><small>Current Challenge</small><br /> {{ question.title }}</h2>
                     </div>
                     <p>{{ question.short_description }}</p>
-                    <div class="sponsor-flog">
-                        Sponsored by <br />
-                        <a href="{{ question.sponsor.website }}">
-                            <img src="{{ question.sponsor.logo.url }}" />
-                        </a>
-                    </div>
+                        <div class="sponsor-flog">
+                            <div class="text">Sponsored by</div>
+                            <a href="{{ question.sponsor.website }}">
+                                <img src="{{ question.sponsor.logo.url }}" />
+                            </a>
+                        </div>
                 {% else %}
                     <div class="page-header">
                         <h2><small>No current challenge</small></h2>

@@ -10,11 +10,20 @@ body {
 }
 
 .sponsor-flog {
-    right: 0px;
     text-align: right;
 
     color: gray;
     font-style: oblique;
+}
+
+.sponsor-flog .text {
+    margin-right: 4.5em;
+}
+
+.sponsor-flog img {
+    margin: 1ex 0;
+    height: 15ex;
+    width: auto;
 }
 
 .form-signin {

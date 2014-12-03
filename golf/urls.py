@@ -13,6 +13,6 @@ urlpatterns = patterns('',
     url(r'^login/$', golfviews.login_form, name='login'),
     url(r'^logout/$', golfviews.logout, name='logout'),
     url(r'^users/profile/(?P<user_pk>\d+)/$', golfviews.profile, name='profile'),
-    url(r'^questions/(?P<question_pk>\d+)', golfviews.question, name='question'),
+    url(r'^question/(?P<question_pk>\d+)/$', golfviews.question, name='question'),
     url(r'^admin/', include(admin.site.urls)),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

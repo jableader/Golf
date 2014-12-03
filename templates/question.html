@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+    <div class="container-fluid">
+        <div class="page-header">
+            <h1>{{ question.title }} <small>{{ question.startDate }} - {{ question.endDate }}</small></h1>
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-8">
+                {% if question.isActive %}
+                    <button class="btn btn-primary btn-lg">
+                        <a href="#">Make a submission</a>
+                    </button>
+                {% else %}
+                    <div class="alert alert-warning">
+                        <strong>Hey there!</strong>
+                        This question is currently not active. To view the current question click <a href="#">Here</a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-2">
+                <div class="text">Sponsored by</div>
+                <a href="{{ question.sponsor.website }}">
+                    <img src="{{ question.sponsor.logo.url }}" />
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+            {{ question.fullDescription }}
+        </div>
+
+    </div>
+
+{% endblock %}

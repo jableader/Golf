@@ -1,9 +1,8 @@
 from django.contrib.auth import authenticate, login, logout as logoutUser
 from django.contrib.auth.models import User
-from django.shortcuts import RequestContext, render, redirect
-from django.views import generic
-from models import Profile, Question
-
+from django.shortcuts import render, redirect
+from models import Question
+from datetime import datetime
 HOME = 'index'
 
 def getNextUrl(request):
@@ -11,7 +10,11 @@ def getNextUrl(request):
     return HOME
 
 def question(request, question_pk):
-    raise Exception("Make a question page") #TODO
+    q = Question.objects.get(pk=question_pk)
+    if q is not None and q.startDate > datetime.today():
+        q = None
+
+    return render(request, 'question.html', {'question': q})
 
 def profile(request, user_pk):
     userToDisplay = None
@@ -30,6 +33,7 @@ def index(request):
     question.title = "Hello Code Golf!"
     question.short_description = "Welcome ProgSoc's Code Golf into the world through a few warm and welcoming lines to stdout"
     question.sponsor_id = 1
+    question.pk = 0
     return render(request, 'index.html', {'question': question})
 
 def login_form(request):

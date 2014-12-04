@@ -1,5 +1,6 @@
 __author__ = 'Jableader'
 
+from django.contrib.admin import ModelAdmin
 from django.db import models
 from sponsor import Sponsor
 from datetime import datetime
@@ -12,7 +13,7 @@ class Question(models.Model):
     sponsor = models.ForeignKey(Sponsor, blank=False, null=False)
     prize = models.CharField(max_length=256)
     short_description = models.CharField(max_length=256)
-    full_description = models.CharField(max_length=4096)
+    full_description = models.TextField()
     startDate = models.DateTimeField()
     endDate = models.DateTimeField()
     inputGenerator = models.FileField(upload_to=getFilePathForQuestion)
@@ -21,14 +22,20 @@ class Question(models.Model):
     def isActive(self):
         return self.endDate < datetime.today <= self.startDate
 
+
+class QuestionAdmin(ModelAdmin):
+    fieldsets = [
+        (None, {'fields': ['title', 'short_description']}),
+        ('Sponsorship', {'fields': ['sponsor', 'prize']}),
+        (None, {'fields': ['startDate', 'endDate']}),
+        (None, {'fields': ['full_description'], 'classes': ['wide']}),
+        ('Validation', {'fields': ['inputGenerator', 'outputGenerator']}),
+    ]
+
 #Cache the value of the current question
-_lastQuestion = None
 def getQuestionForDay(day):
-    global _lastQuestion
-
-    if _lastQuestion == None or _lastQuestion.startDate <= day <= _lastQuestion.endDate:
-        _lastQuestion = Question.objects\
-            .filter(endDate__gte = day)\
-            .filter(startDate__lte = day)[0]
-
-    return _lastQuestion
+    questionOnDay = Question.objects \
+        .filter(endDate__gte = day) \
+        .filter(startDate__lte = day)
+    if len(questionOnDay) != 0: return questionOnDay[0]
+    else: return None

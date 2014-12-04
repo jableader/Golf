@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+    <div class="container">
+        <div class="page-header">
+            <h1>Golf Questions</h1>
+            <div class="panel panel-default">
+                <div class="panel-heading">Page {{ page_number }}. From {{ startDate }} to {{ endDate }}</div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Sponsor</th>
+                            <th>Winner</th>
+                            <th><!--View--></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for question in questions %}
+                            <tr>
+                                <td>{{ question.name }}</td>
+                                <td>{{ question.startDate }}</td>
+                                <td>{{ question.endDate }}</td>
+                                <td>{{ question.sponsor.name }}</td>
+                                <td>{{ question.winner.username }}</td>
+                                <td>
+                                    <a class="btn btn-primary">
+                                        <span class="glyphicon glyphicon-eye-open"></span>
+                                        View
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <div>
+                    Page numbers...
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+{% endblock %}

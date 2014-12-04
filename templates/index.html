@@ -20,16 +20,18 @@
                             <h2><small>Current Challenge</small><br /> {{ question.title }}</h2>
                         </div>
                         <p>{{ question.short_description }}</p>
-                        <div class="take-me-button">
-                            <a class="btn btn-lg btn-primary" href="{% url 'question' question.pk %}">
-                                Take me to it!
-                            </a>
-                        </div>
-                        <div class="sponsor-flog">
-                            <div class="text">Sponsored by</div>
-                            <a href="{{ question.sponsor.website }}">
-                                <img src="{{ question.sponsor.logo.url }}" />
-                            </a>
+                        <div class="row">
+                            <div class="col-md-3 take-me-button">
+                                <a class="btn btn-lg btn-primary" href="{% url 'question' question.pk %}">
+                                    Take me to it!
+                                </a>
+                            </div>
+                            <div class="col-md-3 col-md-offset-6 sponsor-flog">
+                                <div class="text">Sponsored by</div>
+                                <a href="{{ question.sponsor.website }}">
+                                    <img src="{{ question.sponsor.logo.url }}" />
+                                </a>
+                            </div>
                         </div>
                     {% else %}
                         <div class="page-header">
@@ -37,7 +39,7 @@
                         </div>
                         <p>
                             Looks like there is active challenges right now. Feel free to check back here soon.
-                            In the meantime, why don't you view <a href="#">some previous challenges.</a>
+                            In the meantime, why don't you view <a href="{% url 'questions' 0 %}">some previous challenges.</a>
                         </p>
                     {% endif %}
                 </div>

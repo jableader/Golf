@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login, logout as logoutUser
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
-from models import Question
+from models import Question, getQuestionForDay
 from datetime import datetime
 HOME = 'index'
 
@@ -27,14 +27,21 @@ def profile(request, user_pk):
 
     return render(request, 'profile.html', {'userToDisplay': userProfile})
 
+def questions(request, page_number):
+    qs = Question.objects.all()
+    qs = sorted(qs, lambda x, y: x.startDate < y.startDate)
+    if len(qs) > 0:
+        start = qs[0].startDate
+        end = qs[-1].endDate
+    else:
+        start = 'The dawn of time'
+        end = 'today'
+
+    return render(request, 'all_questions.html', {'questions': qs, 'page_number': page_number, 'startDate': start, 'endDate': end})
 
 def index(request):
-    question = Question()
-    question.title = "Hello Code Golf!"
-    question.short_description = "Welcome ProgSoc's Code Golf into the world through a few warm and welcoming lines to stdout"
-    question.sponsor_id = 1
-    question.pk = 0
-    return render(request, 'index.html', {'question': question})
+    q = getQuestionForDay(datetime.today())
+    return render(request, 'index.html', {'question': q})
 
 def login_form(request):
     if request.user.is_authenticated():

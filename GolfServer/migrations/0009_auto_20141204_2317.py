@@ -7,13 +7,13 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('GolfServer', '0005_auto_20141127_1904'),
+        ('GolfServer', '0008_auto_20141204_2306'),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='submission',
-            name='user',
-            field=models.ForeignKey(to='GolfServer.Profile'),
+            model_name='question',
+            name='prize',
+            field=models.CharField(max_length=256),
         ),
     ]

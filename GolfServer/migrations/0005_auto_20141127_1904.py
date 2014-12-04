@@ -16,12 +16,10 @@ class Migration(migrations.Migration):
             model_name='question',
             name='inputGenerator',
             field=models.FileField(upload_to=GolfServer.models.getFilePathForQuestion),
-            preserve_default=True,
         ),
         migrations.AlterField(
             model_name='question',
             name='outputGenerator',
             field=models.FileField(upload_to=GolfServer.models.getFilePathForQuestion),
-            preserve_default=True,
         ),
     ]

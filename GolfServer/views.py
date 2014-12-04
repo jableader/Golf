@@ -1,8 +1,8 @@
 from django.contrib.auth import authenticate, login, logout as logoutUser
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
+from django.utils import timezone
 from models import Question, getQuestionForDay
-from datetime import datetime
 HOME = 'index'
 
 def getNextUrl(request):
@@ -11,10 +11,11 @@ def getNextUrl(request):
 
 def question(request, question_pk):
     q = Question.objects.get(pk=question_pk)
-    if q is not None and q.startDate > datetime.today():
+    isActive = q.startDate < timezone.now() < q.endDate
+    if q is not None and q.startDate > timezone.now():
         q = None
 
-    return render(request, 'question.html', {'question': q})
+    return render(request, 'question.html', {'question': q, 'is_active': isActive})
 
 def profile(request, user_pk):
     userToDisplay = None
@@ -40,7 +41,7 @@ def questions(request, page_number):
     return render(request, 'all_questions.html', {'questions': qs, 'page_number': page_number, 'startDate': start, 'endDate': end})
 
 def index(request):
-    q = getQuestionForDay(datetime.today())
+    q = getQuestionForDay(timezone.now())
     return render(request, 'index.html', {'question': q})
 
 def login_form(request):

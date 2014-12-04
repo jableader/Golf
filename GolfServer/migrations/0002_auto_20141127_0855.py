@@ -38,18 +38,15 @@ class Migration(migrations.Migration):
             model_name='submission',
             name='humanScore',
             field=models.IntegerField(default=0),
-            preserve_default=True,
         ),
         migrations.AlterField(
             model_name='submission',
             name='sizeScore',
             field=models.IntegerField(default=0),
-            preserve_default=True,
         ),
         migrations.AlterField(
             model_name='submission',
             name='timeScore',
             field=models.IntegerField(default=0),
-            preserve_default=True,
         ),
     ]

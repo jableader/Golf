@@ -5,11 +5,11 @@
         <div class="page-header">
             <h1>Golf Questions</h1>
             <div class="panel panel-default">
-                <div class="panel-heading">Page {{ page_number }}. From {{ startDate }} to {{ endDate }}</div>
+                <div class="panel-heading"><strong>Questions from</strong> {{ startDate }} <strong>to</strong> {{ endDate }}</div>
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Name</th>
+                            <th>Title</th>
                             <th>Start</th>
                             <th>End</th>
                             <th>Sponsor</th>
@@ -20,13 +20,13 @@
                     <tbody>
                         {% for question in questions %}
                             <tr>
-                                <td>{{ question.name }}</td>
-                                <td>{{ question.startDate }}</td>
-                                <td>{{ question.endDate }}</td>
+                                <td>{{ question.title }}</td>
+                                <td>{{ question.startDate|date:"SHORT_DATE_FORMAT" }}</td>
+                                <td>{{ question.endDate|date:"SHORT_DATE_FORMAT" }}</td>
                                 <td>{{ question.sponsor.name }}</td>
-                                <td>{{ question.winner.username }}</td>
+                                <td>{{ question.winner.username|default:"None" }}</td>
                                 <td>
-                                    <a class="btn btn-primary">
+                                    <a href="{% url 'question' question.pk %}">
                                         <span class="glyphicon glyphicon-eye-open"></span>
                                         View
                                     </a>

@@ -2,20 +2,35 @@ from django.contrib.auth import authenticate, login, logout as logoutUser
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.utils import timezone
+from django.core.exceptions import ObjectDoesNotExist
+
 from models import Question, getQuestionForDay
+
+
 HOME = 'index'
 
 def getNextUrl(request):
     if 'next' in request.GET: return request.GET['next']
     return HOME
 
-def question(request, question_pk):
-    q = Question.objects.get(pk=question_pk)
-    isActive = q.startDate < timezone.now() < q.endDate
-    if q is not None and q.startDate > timezone.now():
-        q = None
+def question(request, question_pk = None):
+    q = None
+    if question_pk is None:
+        q = getQuestionForDay(timezone.now())
+    else:
+        try:
+            q = Question.objects.get(pk=question_pk)
+            if q.startDate > timezone.now():
+                q = None
 
-    return render(request, 'question.html', {'question': q, 'is_active': isActive})
+        except ObjectDoesNotExist:
+            pass
+
+    if q is None:
+        return render(request, 'no_question.html', {})
+    else:
+        isActive = q is not None and q.startDate < timezone.now() < q.endDate
+        return render(request, 'question.html', {'question': q, 'is_active': isActive})
 
 def profile(request, user_pk):
     userToDisplay = None
@@ -28,7 +43,7 @@ def profile(request, user_pk):
 
     return render(request, 'profile.html', {'userToDisplay': userProfile})
 
-def questions(request, page_number):
+def questions(request, page_number=0):
     qs = Question.objects.all()
     qs = sorted(qs, lambda x, y: x.startDate < y.startDate)
     if len(qs) > 0:

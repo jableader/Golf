@@ -12,36 +12,30 @@
         </div>
 
         <div class="row">
-
-            <div class="col-md-8">
                 {% if is_active %}
-                    <div class="col-md-3 take-me-button">
+                    <div class="take-me-button">
                         <a class="btn btn-lg btn-primary" href="#">
                             Make a submission
                         </a>
                     </div>
                 {% else %}
-                    <div class="alert alert-info">
+                    <div class="alert alert-warning inactive-question">
                         <strong>Hey there!</strong>
                         This question is currently not active. To view the current question click <a href="#">Here</a>
                     </div>
                 {% endif %}
-            </div>
 
-            <div class="col-md-2">
                 <div class="sponsor-flog">
                     <div class="text">Sponsored by</div>
                     <a href="{{ question.sponsor.website }}">
                         <img src="{{ question.sponsor.logo.url }}" />
                     </a>
                 </div>
-            </div>
         </div>
 
         <div class="row">
             A discussion will go here
         </div>
-
     </div>
 
 {% endblock %}

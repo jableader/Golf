@@ -1,6 +1,14 @@
 body {
-    padding-top: 50px;
-    margin: 0 auto;
+    padding-top: 50px; /*border*/
+}
+
+.container-parent {
+    position: absolute;
+    padding-left: 2ex;
+    padding-right: 2ex;
+
+    top: 0px;
+    bottom: 0px;
 }
 
 .banner-logo {
@@ -17,27 +25,17 @@ body {
     display: block;
 }
 
-.inactive-question {
-    width: 50%;
-    max-width: 25em;
-    float: left;
-}
-
 .take-me-button {
     float: left;
-    margin-left: 15px; /* Bootstraps padding on row */
 }
 
 .sponsor-flog {
     text-align: right;
     float: right;
-    margin-right: 15px;
-
-    color: gray;
-    font-style: oblique;
 }
 
 .sponsor-flog .text {
+    /* TODO: Fix this */
     margin-right: 4.5em;
 }
 

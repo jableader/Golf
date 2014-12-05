@@ -4,7 +4,7 @@
     <div class="container">
         <div class="page-header">
             <h1>{{ question.title }}</h1>
-            <h4><small>{{ question.startDate }} <strong>to</strong> {{ question.endDate }}</small></h4>
+            <h4><small><strong>Active from </strong>{{ question.startDate }} <strong>to</strong> {{ question.endDate }}</small></h4>
         </div>
 
         <div class="row">
@@ -17,7 +17,7 @@
                 {% if is_active %}
                     <div class="col-md-3 take-me-button">
                         <a class="btn btn-lg btn-primary" href="#">
-                            Take me to it!
+                            Make a submission
                         </a>
                     </div>
                 {% else %}
@@ -28,11 +28,13 @@
                 {% endif %}
             </div>
 
-            <div class="col-md-2 sponsor-flog">
-                <div class="text">Sponsored by</div>
-                <a href="{{ question.sponsor.website }}">
-                    <img src="{{ question.sponsor.logo.url }}" />
-                </a>
+            <div class="col-md-2">
+                <div class="sponsor-flog">
+                    <div class="text">Sponsored by</div>
+                    <a href="{{ question.sponsor.website }}">
+                        <img src="{{ question.sponsor.logo.url }}" />
+                    </a>
+                </div>
             </div>
         </div>
 

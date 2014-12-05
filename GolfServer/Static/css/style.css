@@ -17,8 +17,13 @@ body {
     display: block;
 }
 
+.take-me-button {
+    float: left;
+}
+
 .sponsor-flog {
     text-align: right;
+    float: right;
 
     color: gray;
     font-style: oblique;

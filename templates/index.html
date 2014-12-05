@@ -6,7 +6,7 @@
             <h1>UTS ProgSoc's Code Golf</h1>
             <p>
                 Challenge yourself and attempt to solve industry linked real programming
-                and computer science problems, and pick up some prizes along the way
+                and computer science problems, and pick up some prizes along the way.
             </p>
         </div>
     </div>
@@ -21,12 +21,12 @@
                         </div>
                         <p>{{ question.short_description }}</p>
                         <div class="row">
-                            <div class="col-md-3 take-me-button">
+                            <div class="take-me-button">
                                 <a class="btn btn-lg btn-primary" href="{% url 'question' question.pk %}">
                                     Take me to it!
                                 </a>
                             </div>
-                            <div class="col-md-3 col-md-offset-6 sponsor-flog">
+                            <div class="sponsor-flog">
                                 <div class="text">Sponsored by</div>
                                 <a href="{{ question.sponsor.website }}">
                                     <img src="{{ question.sponsor.logo.url }}" />

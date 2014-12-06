@@ -1,9 +1,9 @@
 #Compiled stuff
-.pyc
+*.pyc
 
 #Dbs
-.sqlite
-.log
+*.sqlite
+*.log
 
 #Pycharm
 .idea/

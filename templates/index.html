@@ -1,52 +1,52 @@
 {% extends 'base.html' %}
 
 {% block body_block %}
+
     <div class="jumbotron">
         <div class="container">
-            <h1>UTS ProgSoc's Code Golf</h1>
-            <p>
-                Challenge yourself and attempt to solve industry linked real programming
-                and computer science problems, and pick up some prizes along the way.
-            </p>
+            {% if question %}
+                <h2>
+                    <small>Current Challenge</small> <br />
+                    {{ question.title }}
+                </h2>
+
+                <p>{{ question.short_description }}</p>
+
+                <div class="row">
+                    <div class="take-me-button">
+                        <a class="btn btn-lg btn-primary" href="{% url 'question' question.pk %}">
+                            Take me to it!
+                        </a>
+                    </div>
+                    <div class="sponsor-flog">
+                        <div class="text">Sponsored by</div>
+                        <a href="{{ question.sponsor.website }}">
+                            <img src="{{ question.sponsor.logo.url }}" />
+                        </a>
+                    </div>
+                </div>
+            {% else %}
+                <h3>UTS ProgSoc's Code Golf</h3>
+                <p>
+                    Challenge yourself and attempt to solve industry linked real programming and computer science problems,
+                    and pick up some prizes along the way.
+                </p>
+                <a href="{% url 'questions' %}">View challenges</a>
+            {% endif %}
+
         </div>
     </div>
 
     <div class="container">
         <div class="row">
             <div class="col-md-9">
-                <div id="faq-question" class="page-content active">
-                    {% if question %}
-                        <div class="page-header">
-                            <h2><small>Current Challenge</small><br /> {{ question.title }}</h2>
-                        </div>
-                        <p>{{ question.short_description }}</p>
-                        <div class="row">
-                            <div class="take-me-button">
-                                <a class="btn btn-lg btn-primary" href="{% url 'question' question.pk %}">
-                                    Take me to it!
-                                </a>
-                            </div>
-                            <div class="sponsor-flog">
-                                <div class="text">Sponsored by</div>
-                                <a href="{{ question.sponsor.website }}">
-                                    <img src="{{ question.sponsor.logo.url }}" />
-                                </a>
-                            </div>
-                        </div>
-                    {% else %}
-                        <div class="page-header">
-                            <h2><small>No current challenge</small></h2>
-                        </div>
-                        <p>
-                            Looks like there is active challenges right now. Feel free to check back here soon.
-                            In the meantime, why don't you view <a href="{% url 'questions' %}">some previous challenges.</a>
-                        </p>
-                    {% endif %}
-                </div>
                 <div id="faq-what-golf" class="page-content">
                     <div class="page-header"><h2>What is code golf?</h2></div>
                     <p>
-                        Code Golf is a new type of competition that ProgSoc is releasing into the wild.
+                        Code Golf is a new type of competition that ProgSoc is releasing into the wild where
+                        you challenge yourself and attempt to solve industry linked real programming
+                        and computer science problems, and pick up some prizes along the way.
+
                     </p>
                     <p>
                         Each fortnight there will be a new industry focused computer science / engineering question for
@@ -109,6 +109,15 @@
 
                     </div>
                 </div>
+
+                <div id="faq-sponsor" class="page-content">
+                    <div class="page-header"><h2>I'm a company that would love to sponsor a question. How do I do that?</h2></div>
+                    <p>
+                        That's great! We love to add more names to our list of sponsors. Flick us an email at
+                        sponsor@golf.progsoc.org and we'll get into contact with you shortly.
+                    </p>
+                </div>
+
                 <div id="faq-more" class="page-content">
                     <div class="page-header"><h2>This is pretty cool, is there other places like this?</h2></div>
                     <h3>Challenge websites</h3>
@@ -146,12 +155,12 @@
             <div class="col-md-3 faq-container">
                 <h4>FAQ</h4>
                 <ul id="faq-questions" class="nav nav-pills nav-stacked">
-                    <li><a href="#faq-question">What's the current challenge?</a></li>
                     <li><a href="#faq-what-golf">What is code golf?</a></li>
                     <li><a href="#faq-what-progsoc">What is UTS ProgSoc?</a></li>
                     <li><a href="#faq-why-we-golf">Why do we do this?</a></li>
                     <li><a href="#faq-why-me-golf">What's in it for me?</a></li>
                     <li><a href="#faq-prizes">Where do the prizes come from?</a></li>
+                    <li><a href="#faq-sponsor">I'm a company that would love to sponsor you.</a></li>
                     <li><a href="#faq-more">This is pretty cool, is there other places like this?</a></li>
                 </ul>
             </div>
@@ -165,19 +174,19 @@
         (function () {
             var faqs = $('#faq-questions').children('li');
             faqs.find('a')
-                .click(function(){
-                    $('.jumbotron').animate({'height': 0}, 'fast', undefined, function(){ $('.jumbotron').css('display', 'none'); });
-                    faqs.removeClass('active');
-                    $(this).parent().addClass('active');
+                    .click(function(){
+                        $('.jumbotron').animate({'height': 0}, 'fast', undefined, function(){ $('.jumbotron').css('display', 'none'); });
+                        faqs.removeClass('active');
+                        $(this).parent().addClass('active');
 
-                    $('.page-content').removeClass('active');
-                    $($(this).data('faq-id')).addClass('active');
-                })
-                .each(function (index, a) {
-                    a = $(a);
-                    a.data('faq-id', a.attr('href'));
-                    a.removeAttr('href');
-                });
+                        $('.page-content').removeClass('active');
+                        $($(this).data('faq-id')).addClass('active');
+                    })
+                    .each(function (index, a) {
+                        a = $(a);
+                        a.data('faq-id', a.attr('href'));
+                        a.removeAttr('href');
+                    });
         })();
 
     </script>

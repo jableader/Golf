@@ -9,6 +9,7 @@ body {
     top:-1ex
 }
 
+/*
 .page-content {
     display: none;
 }
@@ -16,6 +17,7 @@ body {
 .page-content.active {
     display: block;
 }
+*/
 
 .inactive-question {
     width: 50%;

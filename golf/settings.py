@@ -85,4 +85,4 @@ TEMPLATE_DIRS = (
 #Custom add ons
 
 MEDIA_ROOT = 'user_files/'
-MEDIA_URL = 'user_files/'
+MEDIA_URL = '/user_files/'

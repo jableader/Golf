@@ -8,36 +8,39 @@
                 <div class="panel-heading"><strong>Questions from</strong> {{ startDate }} <strong>to</strong> {{ endDate }}</div>
                 <table class="table">
                     <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Start</th>
-                            <th>End</th>
-                            <th>Sponsor</th>
-                            <th>Winner</th>
-                            <th><!--View--></th>
-                        </tr>
+                    <tr>
+                        <th>Title</th>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th>Sponsor</th>
+                        <th>Winner</th>
+                        <th><!--View--></th>
+                    </tr>
                     </thead>
                     <tbody>
-                        {% for question in questions %}
-                            <tr>
-                                <td>{{ question.title }}</td>
-                                <td>{{ question.startDate|date:"SHORT_DATE_FORMAT" }}</td>
-                                <td>{{ question.endDate|date:"SHORT_DATE_FORMAT" }}</td>
-                                <td>{{ question.sponsor.name }}</td>
-                                <td>{{ question.winner.username|default:"None" }}</td>
-                                <td>
-                                    <a href="{% url 'question' question.pk %}">
-                                        <span class="glyphicon glyphicon-eye-open"></span>
-                                        View
-                                    </a>
-                                </td>
-                            </tr>
-                        {% endfor %}
+                    {% for question in questions %}
+                        <tr>
+                            <td>{{ question.title }}</td>
+                            <td>{{ question.startDate|date:"SHORT_DATE_FORMAT" }}</td>
+                            <td>{{ question.endDate|date:"SHORT_DATE_FORMAT" }}</td>
+                            <td>{{ question.sponsor.name }}</td>
+                            <td>{{ question.winner.username|default:"None" }}</td>
+                            <td>
+                                <a href="{% url 'question' question.pk %}">
+                                    <span class="glyphicon glyphicon-eye-open"></span>
+                                    View
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
-
-                <div>
-                    Page numbers...
+                <div class="text-center">
+                    <ul class="pagination">
+                        <li class="disabled"><a href="#">&laquo;</a></li>
+                        <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+                        <li class="disabled"><a href="#">&raquo;</a></li>
+                    </ul>
                 </div>
             </div>
         </div>

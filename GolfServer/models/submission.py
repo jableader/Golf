@@ -11,7 +11,7 @@ def getFilePathForSubmission(instance, fname):
     for char in '<>:"/\\|?*':
         fname = fname.replace(char, '_')
     date = datetime.now().strftime("%y_%m_%d_")
-    return instance.user.pk + '/' + date + fname
+    return instance.user.directory(instance.question.pk + '/' + date + fname)
 
 class Submission(models.Model):
     user = models.ForeignKey(Profile, blank=False, null=False)

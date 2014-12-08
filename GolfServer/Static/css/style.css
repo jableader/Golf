@@ -1,5 +1,5 @@
 body {
-    padding-top: 50px;
+    padding-top: 55px;
     margin: 0 auto;
 }
 
@@ -9,15 +9,30 @@ body {
     top:-1ex
 }
 
-/*
-.page-content {
-    display: none;
+/* Profile */
+
+.profile-banner {
+    padding-top: 2ex;
+    border-bottom: solid thin darkgray;
+    margin-bottom: 3ex;
 }
 
-.page-content.active {
-    display: block;
+.profile-banner img {
+    border-radius: 1ex;
+    box-shadow: 0 0 0.25em black;
+    height: 6ex;
+    margin: 0 3%;
 }
-*/
+
+.profile-banner h1 {
+    vertical-align: bottom;
+}
+
+.submission-stats td:first-child {
+    font-weight: bold;
+}
+
+/* Question Related */
 
 .inactive-question {
     width: 50%;
@@ -48,6 +63,10 @@ body {
     height: 15ex;
     width: auto;
 }
+
+/*
+Login Page
+*/
 
 .form-signin {
     max-width: 20em;

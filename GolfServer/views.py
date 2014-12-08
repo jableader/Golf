@@ -40,8 +40,9 @@ def profile(request, user_pk):
     userProfile = None
     if userToDisplay != None and hasattr(userToDisplay, 'profile'):
         userProfile = userToDisplay.profile
+        userProfile.winCount = 0
 
-    return render(request, 'profile.html', {'userToDisplay': userProfile})
+    return render(request, 'profile.html', {'userToDisplay': userToDisplay})
 
 def questions(request, page_number=0):
     qs = Question.objects.all()

@@ -9,19 +9,65 @@
             </div>
 
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="panel panel-default">
                         <div class="panel-heading"><h4>Submissions</h4></div>
                         <table class="table submission-stats">
-                            <tr><td>Questions Attempted</td> <td> {{ uniqueQuestionsAttempts|default:0 }} </td></tr>
-                            <tr><td>Total Submissions</td> <td> {{ totalSubmissions|default:0 }} </td></tr>
-                            <tr><td>Winning Submissions</td> <td> {{ winningSubmissions|default:0 }} </td></tr>
+                            <tr><td>Questions Attempted</td> <td> {{ uniqueQuestionsAttempts }} </td></tr>
+                            <tr><td>Total Submissions</td> <td> {{ totalSubmissions }} </td></tr>
+                            <tr><td>Winning Submissions</td> <td> {{ winningSubmissions }} </td></tr>
                         </table>
+                    </div>
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><h4>Badges</h4></div>
+                        {% for badge in userToDisplay.profile.badges_set %}
+                            <div><b>Badge</b> {{ badge.name }}</div>
+                        {% empty %}
+                            <div class="panel-body">This user doesn't have any badges yet. Better get cracking!</div>
+                        {% endfor %}
                     </div>
                 </div>
 
-                <div class="col-md-9">
-                    Some more information
+                <div class="col-md-8">
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><h3>Submissions</h3></div>
+
+                        {% if submissions_to_display|length_is:0 %}
+                            <div class="panel-body">Looks like this user has no submissions</div>
+                        {% else %}
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Question</th>
+                                    <th>Language</th>
+                                    <th>Date</th>
+                                    <th>Size</th>
+                                    <th>Time</th>
+                                    <th>Factor</th>
+                                    <th><!--Get--></th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                {% for submission in submissions_to_display %}
+                                    <tr>
+                                        <td>
+                                            {% ifchanged submission.question.title %}
+                                                <a href="{% url 'question' submission.question.pk %}">{{ submission.question.title }}</a>
+                                            {% endifchanged %}
+                                        </td>
+                                        <td>{{ submission.language }}</td>
+                                        <td>{{ submission.date }}</td>
+                                        <td>{{ submission.sizeScore }}</td>
+                                        <td>{{ submission.timeScore }}</td>
+                                        <td>{{ submission.humanScore }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
 

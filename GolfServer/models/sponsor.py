@@ -1,7 +1,6 @@
 __author__ = 'Jableader'
 from django.db import models
 from django.core.files.storage import FileSystemStorage
-from django.conf import settings
 
 storage = FileSystemStorage(base_url='/user_files/sponsor_logos')
 

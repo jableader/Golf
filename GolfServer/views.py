@@ -1,10 +1,9 @@
 from django.contrib.auth import authenticate, login, logout as logoutUser
-from django.contrib.auth.models import User
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 
-from models import Question, getQuestionForDay
+from models import Question, getQuestionForDay, Profile
 
 
 HOME = 'index'
@@ -33,16 +32,17 @@ def question(request, question_pk = None):
         return render(request, 'question.html', {'question': q, 'is_active': isActive})
 
 def profile(request, user_pk):
-    userToDisplay = None
-    try: userToDisplay = User.objects.get(pk=user_pk)
-    except User.DoesNotExist: pass
+    userToDisplay = get_object_or_404(Profile, user_id=user_pk).user
+    context = {
+        'userToDisplay': userToDisplay,
+        'uniqueQuestionsAttempts': userToDisplay.profile.submission_set.order_by('question_id').distinct().count(),
+        'totalSubmissions': userToDisplay.profile.submission_set.count(),
+        'winningSubmissions': 0,
+        'submissions_to_display': userToDisplay.profile.submission_set.filter(question__endDate__lte = timezone.now()),
+    }
 
-    userProfile = None
-    if userToDisplay != None and hasattr(userToDisplay, 'profile'):
-        userProfile = userToDisplay.profile
-        userProfile.winCount = 0
+    return render(request, 'profile.html', context)
 
-    return render(request, 'profile.html', {'userToDisplay': userToDisplay})
 
 def questions(request, page_number=0):
     qs = Question.objects.all()

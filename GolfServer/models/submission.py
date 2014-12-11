@@ -14,9 +14,9 @@ def getFilePathForSubmission(instance, fname):
     return instance.user.directory(instance.question.pk + '/' + date + fname)
 
 class Submission(models.Model):
-    user = models.ForeignKey(Profile, blank=False, null=False)
+    owner = models.ForeignKey(Profile, blank=False, null=False)
     question = models.ForeignKey(Question, blank=False, null=False)
-    submissionDate = models.DateTimeField()
+    date = models.DateTimeField()
     language = models.CharField(max_length=10)
     files = models.FileField(upload_to=getFilePathForSubmission)
     sizeScore = models.IntegerField(default=0)

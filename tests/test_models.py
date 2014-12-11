@@ -7,12 +7,14 @@ __author__ = 'Jableader'
 class TestQuestion(TestCase):
 
     def test_getCurrentQuestion(self):
-        today = datetime.today()
-        tooHot = Question(title='perfect', startDate=datetime(2014, 11, 25), endDate=datetime(2014, 11, 30))
-        tooCold = Question(title='perfect', startDate=datetime(2014, 11, 10), endDate=datetime(2014, 11, 19))
-        justRight = Question(title='perfect', startDate=datetime(2014, 11, 19), endDate=datetime(2014, 11, 25))
+        today = datetime.now()
+        questions = [
+            Question(title='old', startDate=today.addDays(-13), endDate=today.addDays(-6)),
+            Question(title='current', startDate=today.addDays(-6), endDate=today.addDays(1)),
+            Question(title='future', startDate=today.addDays(1), endDate=today.addDays(8))
+        ]
 
-        Question.objects.bulk_create([tooHot, tooCold, justRight])
+        Question.objects.bulk_create(questions)
 
         question = getQuestionForDay(datetime.today())
-        self.assertEqual(question.title, 'perfect')
+        self.assertEqual(question.title, 'current')

@@ -5,7 +5,6 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from models import Question, getQuestionForDay, Profile
 
-
 HOME = 'index'
 
 def getNextUrl(request):
@@ -31,22 +30,22 @@ def question(request, question_pk = None):
         isActive = q is not None and q.startDate < timezone.now() < q.endDate
         return render(request, 'question.html', {'question': q, 'is_active': isActive})
 
-def profile(request, user_pk):
+def profile_context(user_pk):
     userToDisplay = get_object_or_404(Profile, user_id=user_pk).user
-    context = {
+    userSubmissions = userToDisplay.profile.submission_set.filter(question__endDate__lte = timezone.now()).order_by('date')
+    return {
         'userToDisplay': userToDisplay,
-        'uniqueQuestionsAttempts': userToDisplay.profile.submission_set.order_by('question_id').distinct().count(),
-        'totalSubmissions': userToDisplay.profile.submission_set.count(),
+        'submissions_to_display': userSubmissions,
+        'uniqueQuestionsAttempts': 0,
         'winningSubmissions': 0,
-        'submissions_to_display': userToDisplay.profile.submission_set.filter(question__endDate__lte = timezone.now()),
     }
 
-    return render(request, 'profile.html', context)
+def profile(request, user_pk):
+    return render(request, 'profile.html', profile_context(user_pk))
 
 
 def questions(request, page_number=0):
-    qs = Question.objects.all()
-    qs = sorted(qs, lambda x, y: x.startDate < y.startDate)
+    qs = Question.objects.all().order_by('startDate')
     if len(qs) > 0:
         start = qs[0].startDate
         end = qs[-1].endDate

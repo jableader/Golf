@@ -23,10 +23,10 @@ class TestProfileView(TestCase):
         profile = Profile.objects.create(user=user)
 
         self.submissions = [
-            Submission.objects.create(question=questions[0], owner=profile, date = questions[0].startDate + timedelta(days=1)),
-            Submission.objects.create(question=questions[0], owner=profile, date = questions[0].startDate + timedelta(days=2)),
-            Submission.objects.create(question=questions[1], owner=profile, date = questions[1].startDate + timedelta(days=1)),
-            Submission.objects.create(question=questions[3], owner=profile, date = questions[3].startDate + timedelta(days=1)),
+            new(Submission, question=questions[0], owner=profile, date = questions[0].startDate + timedelta(days=1)),
+            new(Submission, question=questions[0], owner=profile, date = questions[0].startDate + timedelta(days=2)),
+            new(Submission, question=questions[1], owner=profile, date = questions[1].startDate + timedelta(days=1)),
+            new(Submission, question=questions[3], owner=profile, date = questions[3].startDate + timedelta(days=1)),
         ]
 
         #q : score
@@ -41,9 +41,9 @@ class TestProfileView(TestCase):
         self.otherProfile = Profile.objects.create(user=self.otherUser)
 
         self.otherSubmissions = [
-            Submission.objects.create(question=questions[0], owner=self.otherProfile, date = questions[0].startDate + timedelta(days=1)),
-            Submission.objects.create(question=questions[1], owner=self.otherProfile, date = questions[1].startDate + timedelta(days=1)),
-            Submission.objects.create(question=questions[2], owner=self.otherProfile, date = questions[2].startDate + timedelta(days=1)),
+            new(Submission, question=questions[0], owner=self.otherProfile, date = questions[0].startDate + timedelta(days=1)),
+            new(Submission, question=questions[1], owner=self.otherProfile, date = questions[1].startDate + timedelta(days=1)),
+            new(Submission, question=questions[2], owner=self.otherProfile, date = questions[2].startDate + timedelta(days=1)),
         ]
 
         #q : score

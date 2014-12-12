@@ -1,20 +1,17 @@
-from unittest import TestCase
+from django.test import TestCase
 from GolfServer.models import Question, getQuestionForDay
-from datetime import datetime, timedelta
+from django.utils import timezone
+from test_suite import new, daysFromToday
 
 __author__ = 'Jableader'
 
+
 class TestQuestion(TestCase):
-
     def test_getCurrentQuestion(self):
-        today = datetime.now()
-        questions = [
-            Question(title='old', startDate=today.addDays(-13), endDate=today.addDays(-6)),
-            Question(title='current', startDate=today.addDays(-6), endDate=today.addDays(1)),
-            Question(title='future', startDate=today.addDays(1), endDate=today.addDays(8))
-        ]
+        new(Question, title='old', startDate=daysFromToday(-13), endDate=daysFromToday(-6)),
+        new(Question, title='current', startDate=daysFromToday(-6), endDate=daysFromToday(1)),
+        new(Question, title='future', startDate=daysFromToday(1), endDate=daysFromToday(8))
 
-        Question.objects.bulk_create(questions)
-
-        question = getQuestionForDay(datetime.today())
+        question = getQuestionForDay(timezone.now())
         self.assertEqual(question.title, 'current')
+

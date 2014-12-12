@@ -6,18 +6,17 @@ from GolfServer.models import Question, Submission, Profile
 from datetime import timedelta
 from django.utils import timezone
 
+from test_suite import new, daysFromToday
 from GolfServer import views
-
-def daysFromToday(i): return timezone.now() + timedelta(days=i)
 
 class TestProfileView(TestCase):
 
     def setUp(self):
         questions = [
-            Question.objects.create(startDate=daysFromToday(-20), endDate=daysFromToday(-13), sponsor_id=0),
-            Question.objects.create(startDate=daysFromToday(-13), endDate=daysFromToday(-6), sponsor_id=0),
-            Question.objects.create(startDate=daysFromToday(-6), endDate=daysFromToday(1), sponsor_id=0),
-            Question.objects.create(startDate=daysFromToday(1), endDate=daysFromToday(8), sponsor_id=0),
+            new(Question, startDate=daysFromToday(-20), endDate=daysFromToday(-13)),
+            new(Question, startDate=daysFromToday(-13), endDate=daysFromToday(-6)),
+            new(Question, startDate=daysFromToday(-6), endDate=daysFromToday(1)),
+            new(Question, startDate=daysFromToday(1), endDate=daysFromToday(8)),
         ]
 
         user = User.objects.create_user("BillyJoe", "bj@bj.com")

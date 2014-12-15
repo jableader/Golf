@@ -5,7 +5,6 @@ from test_suite import new, daysFromToday
 
 __author__ = 'Jableader'
 
-
 class TestQuestion(TestCase):
     def test_getCurrentQuestion(self):
         new(Question, title='old', startDate=daysFromToday(-13), endDate=daysFromToday(-6)),

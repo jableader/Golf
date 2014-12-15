@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login, logout as logoutUser
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
-from django.core.exceptions import ObjectDoesNotExist
+from django.http import Http404
 
 from models import Question, getQuestionForDay, Profile
 
@@ -12,27 +12,19 @@ def getNextUrl(request):
     return HOME
 
 def question(request, question_pk = None):
-    q = None
+    now = timezone.now()
     if question_pk is None:
-        q = getQuestionForDay(timezone.now())
+        q = get_object_or_404(Question, startDate__lte = now, endDate__gt = now)
     else:
-        try:
-            q = Question.objects.get(pk=question_pk)
-            if q.startDate > timezone.now():
-                q = None
+        q = get_object_or_404(Question, pk=question_pk, startDate__lte = now)
 
-        except ObjectDoesNotExist:
-            pass
-
-    if q is None:
-        return render(request, 'no_question.html', {})
-    else:
-        isActive = q is not None and q.startDate < timezone.now() < q.endDate
-        return render(request, 'question.html', {'question': q, 'is_active': isActive})
+    isActive = q.startDate < timezone.now() < q.endDate
+    return render(request, 'question.html', {'question': q, 'is_active': isActive})
 
 def profile_context(user_pk):
     userToDisplay = get_object_or_404(Profile, user_id=user_pk).user
     userSubmissions = userToDisplay.profile.submission_set.filter(question__endDate__lte = timezone.now()).order_by('date')
+
     return {
         'userToDisplay': userToDisplay,
         'submissions_to_display': userSubmissions,
@@ -42,7 +34,6 @@ def profile_context(user_pk):
 
 def profile(request, user_pk):
     return render(request, 'profile.html', profile_context(user_pk))
-
 
 def questions(request, page_number=0):
     qs = Question.objects.all().order_by('startDate')
@@ -62,17 +53,17 @@ def index(request):
 def login_form(request):
     if request.user.is_authenticated():
         return redirect(getNextUrl(request))
-    else:
-        hasTriedBefore = False
-        if 'username' in request.POST and 'password' in request.POST:
-            user = authenticate(username=request.POST['username'], password=request.POST['password'])
-            if user is not None:
-                login(request, user)
-                return redirect(getNextUrl(request), permanent=True)
-            else:
-                hasTriedBefore = True
 
-        return render(request, 'login_form.html', {'hasTriedBefore': hasTriedBefore, 'next': getNextUrl(request)})
+    context = {'next': getNextUrl(request), 'hasTriedBefore': False}
+    if 'username' in request.POST and 'password' in request.POST:
+        user = authenticate(username=request.POST['username'], password=request.POST['password'])
+        if user is not None:
+            login(request, user)
+            return redirect(getNextUrl(request), permanent=True)
+        else:
+            context['hasTriedBefore'] = True
+
+    return render(request, 'login_form.html', context)
 
 def logout(request):
     logoutUser(request)

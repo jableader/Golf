@@ -13,5 +13,5 @@ class Profile(models.Model):
     image = models.FileField(upload_to=userDirectory, null=True)
     badges = models.ManyToManyField(Badge)
 
-    def directory(self, fname): return userDirectory(self, fname)
-
+    def directory(self, fname):
+        return userDirectory(self, fname)

@@ -11,7 +11,10 @@ def userDirectory(profile, fname):
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL)
     image = models.FileField(upload_to=userDirectory, null=True)
-    badges = models.ManyToManyField(Badge)
+    badges = models.ManyToManyField(Badge, blank=True)
+
+    def __str__(self):
+        return self.user.username
 
     def directory(self, fname):
         return userDirectory(self, fname)

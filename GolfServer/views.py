@@ -37,7 +37,7 @@ def profile(request, user_pk):
 
 SIBLINGS_IN_VIEW = 3
 def questions(request, page_number=1, questions_per_page=15):
-    paginator = Paginator(Question.objects.all().order_by('startDate'), questions_per_page)
+    paginator = Paginator(Question.objects.filter(startDate__lte=timezone.now()).order_by('startDate'), questions_per_page)
     try:
         qs = paginator.page(page_number)
     except InvalidPage:

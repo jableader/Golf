@@ -38,6 +38,16 @@ class TestAllQuestionsView(TestCase):
             self.assertTrue(len(siblings)%2==1, msg="Must be odd to have equal length sides")
             self.assertEqual(5, siblings[len(siblings)/2], msg="There should be an equal amount of page numbers on both sides")
 
+    def test_all_questions_doesnt_show_future_ones(self):
+        future = new(Question, title='future', startDate=daysFromToday(5), endDate=daysFromToday(12))
+        current = new(Question, title='current', startDate=daysFromToday(-4), endDate=daysFromToday(5))
+        past = new(Question, title='past', startDate=daysFromToday(-4), endDate=daysFromToday(5))
+
+        with echoRender():
+            _, _, context = views.questions(None)
+
+            self.assertSequenceEqual([current, past], context['questions'])
+
 
 class TestQuestionView(TestCase):
 

@@ -1,9 +1,9 @@
 from django.contrib.auth import authenticate, login, logout as logoutUser
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
-from django.http import Http404
 
 from models import Question, getQuestionForDay, Profile
+from django.core.paginator import Paginator, InvalidPage
 
 HOME = 'index'
 
@@ -35,16 +35,20 @@ def profile_context(user_pk):
 def profile(request, user_pk):
     return render(request, 'profile.html', profile_context(user_pk))
 
-def questions(request, page_number=0):
-    qs = Question.objects.all().order_by('startDate')
-    if len(qs) > 0:
-        start = qs[0].startDate
-        end = qs[-1].endDate
-    else:
-        start = 'The dawn of time'
-        end = 'today'
+SIBLINGS_IN_VIEW = 3
+def questions(request, page_number=1, questions_per_page=15):
+    paginator = Paginator(Question.objects.all().order_by('startDate'), questions_per_page)
+    try:
+        qs = paginator.page(page_number)
+    except InvalidPage:
+        qs = paginator.page(paginator.num_pages)
 
-    return render(request, 'all_questions.html', {'questions': qs, 'page_number': page_number, 'startDate': start, 'endDate': end})
+    start = qs[0].startDate
+    end = qs[-1].endDate
+
+    siblings = range(max(qs.number - SIBLINGS_IN_VIEW, 1), min(qs.number + SIBLINGS_IN_VIEW, paginator.num_pages)+1)
+
+    return render(request, 'all_questions.html', {'questions': qs, 'startDate': start, 'endDate': end, 'sibling_pages': siblings})
 
 def index(request):
     q = getQuestionForDay(timezone.now())

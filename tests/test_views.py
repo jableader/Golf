@@ -10,6 +10,35 @@ from django.http import Http404
 from test_suite import new, daysFromToday, echoRender
 from GolfServer import views
 
+class TestAllQuestionsView(TestCase):
+
+    def test_single_page_still_has_number(self):
+        new(Question, title="Lonely bugger")
+
+        with echoRender():
+            _, _, context = views.questions(None)
+
+            self.assertEqual([1], context['sibling_pages'])
+
+    def test_pagination_range_returns_correct_values(self):
+        for q in range(31): #Make a bunch of questions
+            new(Question, title=str(q), startDate=daysFromToday(-q*7), endDate=daysFromToday(-(q-1)*7))
+
+        with echoRender():
+            #1 for page_number + 1 for non-zero based index + SIBLINGS_IN_VIEW
+            _, _, context = views.questions(None, 1, 5)
+            self.assertSequenceEqual(range(1, 1+1+views.SIBLINGS_IN_VIEW), context['sibling_pages'])
+
+            #3 for page_number + 1 for non-zero based index + SIBLINGS_IN_VIEW
+            _, _, context = views.questions(None, 3, 4)
+            self.assertSequenceEqual(range(1, 3+1+views.SIBLINGS_IN_VIEW), context['sibling_pages'])
+
+            _, _, context = views.questions(None, 5, 3)
+            siblings = context['sibling_pages']
+            self.assertTrue(len(siblings)%2==1, msg="Must be odd to have equal length sides")
+            self.assertEqual(5, siblings[len(siblings)/2], msg="There should be an equal amount of page numbers on both sides")
+
+
 class TestQuestionView(TestCase):
 
     def setUp(self):

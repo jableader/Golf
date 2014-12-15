@@ -1,6 +1,7 @@
 __author__ = 'Jableader'
 from django.utils.timezone import datetime
 from django.db import models
+from mock import patch
 
 def _field_value(field):
     ftype = type(field)
@@ -9,8 +10,11 @@ def _field_value(field):
     if ftype is models.DateTimeField: return datetime(2014, 12, 12, 12)
     if ftype is models.ForeignKey: return new(field.related.parent_model)
     if ftype is models.ManyToManyField: return None
+    if ftype is models.FileField: return '/static/img/logo_small_white.png'
     return ''
 
+def echoRender():
+    return patch('GolfServer.views.render', lambda *args: args)
 
 def new(modelClass, **kwargs):
     fields = modelClass._meta.fields

@@ -2,13 +2,12 @@ __author__ = 'Jableader'
 
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
-from GolfServer.models import Question, Submission, Profile
+from GolfServer.models import Question, Submission, Profile, Sponsor
 from datetime import timedelta
 from django.utils import timezone
 from django.http import Http404
-from mock import patch
 
-from test_suite import new, daysFromToday
+from test_suite import new, daysFromToday, echoRender
 from GolfServer import views
 
 class TestQuestionView(TestCase):
@@ -18,22 +17,18 @@ class TestQuestionView(TestCase):
         self.current = new(Question, title="current", startDate=daysFromToday(-1), endDate=daysFromToday(7))
         self.not_started = new(Question, title="future", startDate=daysFromToday(7), endDate=daysFromToday(14))
 
-        self.patched = patch('GolfServer.views.render', lambda *args: args)
-        self.patched.start()
-
-    def tearDown(self):
-        self.patched.stop()
-
     def test_no_param_gets_current(self):
-        request, template, context = views.question(None)
-        self.assertEqual(self.current.title, context['question'].title)
+        with echoRender():
+            request, template, context = views.question(None)
+            self.assertEqual(self.current.title, context['question'].title)
 
     def test_param_isActive(self):
-        request, template, context = views.question(None, self.finished.pk)
-        self.assertFalse(context['is_active'])
+        with echoRender():
+            request, template, context = views.question(None, self.finished.pk)
+            self.assertFalse(context['is_active'])
 
-        request, template, context = views.question(None, self.current.pk)
-        self.assertTrue(context['is_active'])
+            request, template, context = views.question(None, self.current.pk)
+            self.assertTrue(context['is_active'])
 
     def test_not_started_question(self):
         with self.assertRaises(Http404):
@@ -109,7 +104,7 @@ class TestProfileView(TestCase):
 
     def test_submissions_to_display_is_ordered(self):
         context = views.profile_context(self.user.pk)
-        readySubmissions = [s.pk for s in sorted(self.submissions, lambda x, y: x.date > y.date) if s.date < timezone.now()]
+        readySubmissions = [s.pk for s in sorted(self.submissions, lambda x, y: x.date > y.date) if s.question.endDate < timezone.now()]
 
         otherSubs = [s.pk for s in context['submissions_to_display']]
         self.assertSequenceEqual(readySubmissions, otherSubs)

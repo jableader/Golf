@@ -12,12 +12,11 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+#Grab our private keys
+from private_keys import DISQUS_API_KEY, SECRET_KEY
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '%jt(hn8pvn+ylx$)5r3m#*2tv7x*g%n6k8%wlh(0dlbkh%oz^e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,6 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'GolfServer',
+    'disqus',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -86,3 +86,7 @@ TEMPLATE_DIRS = (
 
 MEDIA_ROOT = 'user_files/'
 MEDIA_URL = '/user_files/'
+
+#diqus
+
+DISQUS_WEBSITE_SHORTNAME = 'Code Golf'

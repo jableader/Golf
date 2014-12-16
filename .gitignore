@@ -11,6 +11,8 @@
 #User db stuff
 user_files/
 
+#Secret things
+private_keys.py
 
 # OS generated files #
 ######################

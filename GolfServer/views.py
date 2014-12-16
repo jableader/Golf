@@ -2,14 +2,13 @@ from django.contrib.auth import authenticate, login, logout as logoutUser
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 
-from models import Question, getQuestionForDay, Profile
+from models import Question, activeQuestion, Profile
 from django.core.paginator import Paginator, InvalidPage
 
 HOME = 'index'
 
 def getNextUrl(request):
-    if 'next' in request.GET: return request.GET['next']
-    return HOME
+    return request.GET.get('next', HOME)
 
 def question(request, question_pk = None):
     now = timezone.now()
@@ -18,8 +17,7 @@ def question(request, question_pk = None):
     else:
         q = get_object_or_404(Question, pk=question_pk, startDate__lte = now)
 
-    isActive = q.startDate < timezone.now() < q.endDate
-    return render(request, 'question.html', {'question': q, 'is_active': isActive})
+    return render(request, 'question.html', {'question': q})
 
 def profile_context(user_pk):
     userToDisplay = get_object_or_404(Profile, user_id=user_pk).user
@@ -51,8 +49,7 @@ def questions(request, page_number=1, questions_per_page=15):
     return render(request, 'all_questions.html', {'questions': qs, 'startDate': start, 'endDate': end, 'sibling_pages': siblings})
 
 def index(request):
-    q = getQuestionForDay(timezone.now())
-    return render(request, 'index.html', {'question': q})
+    return render(request, 'index.html', {'question': activeQuestion()})
 
 def login_form(request):
     if request.user.is_authenticated():

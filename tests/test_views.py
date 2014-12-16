@@ -2,13 +2,33 @@ __author__ = 'Jableader'
 
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
-from GolfServer.models import Question, Submission, Profile, Sponsor
+from GolfServer.models import Question, Submission, Profile
 from datetime import timedelta
 from django.utils import timezone
 from django.http import Http404
 
 from test_suite import new, daysFromToday, echoRender
 from GolfServer import views
+
+class QuestionsAssertions:
+    def __init__(self, len_questions):
+        self.len_questions = len_questions
+        for q in range(len_questions+1): #Make a bunch of questions
+            new(Question, title=str(q), startDate=daysFromToday(-q*7), endDate=daysFromToday(-(q-1)*7))
+
+    def __enter__(self, *args):
+        self.patched = echoRender()
+        self.patched.start()
+
+        return self
+
+    def __exit__(self, *args):
+        self.patched.stop()
+
+    def makeAssertion(self, assertion, page_num=1, how_many_pages=5):
+        _, _, context = views.questions(None, page_num, self.len_questions/how_many_pages)
+
+        assertion(context['sibling_pages'])
 
 class TestAllQuestionsView(TestCase):
 
@@ -17,29 +37,28 @@ class TestAllQuestionsView(TestCase):
 
         with echoRender():
             _, _, context = views.questions(None)
-
             self.assertEqual([1], context['sibling_pages'])
 
     def test_pagination_range_returns_correct_values(self):
-        for q in range(31): #Make a bunch of questions
-            new(Question, title=str(q), startDate=daysFromToday(-q*7), endDate=daysFromToday(-(q-1)*7))
-
-        with echoRender():
+        with QuestionsAssertions(30) as qa:
             #1 for page_number + 1 for non-zero based index + SIBLINGS_IN_VIEW
-            _, _, context = views.questions(None, 1, 5)
-            self.assertSequenceEqual(range(1, 1+1+views.SIBLINGS_IN_VIEW), context['sibling_pages'])
+            qa.makeAssertion(lambda siblings: self.assertSequenceEqual(range(1, 2+views.SIBLINGS_IN_VIEW), siblings))
 
             #3 for page_number + 1 for non-zero based index + SIBLINGS_IN_VIEW
-            _, _, context = views.questions(None, 3, 4)
-            self.assertSequenceEqual(range(1, 3+1+views.SIBLINGS_IN_VIEW), context['sibling_pages'])
+            qa.makeAssertion(lambda siblings: self.assertSequenceEqual(range(1, 4+views.SIBLINGS_IN_VIEW), siblings), 3, 10)
 
-            _, _, context = views.questions(None, 5, 3)
-            siblings = context['sibling_pages']
-            self.assertTrue(len(siblings)%2==1, msg="Must be odd to have equal length sides")
-            self.assertEqual(5, siblings[len(siblings)/2], msg="There should be an equal amount of page numbers on both sides")
+            #Assert doesnt go over last page
+            qa.makeAssertion(lambda siblings: self.assertEqual(11, siblings[-1]), page_num=11, how_many_pages=10)
+
+            def assertEqualOnBothSides(siblings):
+                self.assertTrue(len(siblings)%2==1, msg="Must be odd to have equal length sides")
+                self.assertEqual(5, siblings[len(siblings)/2], msg="There should be an equal amount of page numbers on both sides")
+
+            qa.makeAssertion(assertEqualOnBothSides, page_num=5, how_many_pages=10)
 
     def test_all_questions_doesnt_show_future_ones(self):
-        future = new(Question, title='future', startDate=daysFromToday(5), endDate=daysFromToday(12))
+        new(Question, title='future', startDate=daysFromToday(5), endDate=daysFromToday(12))
+
         current = new(Question, title='current', startDate=daysFromToday(-4), endDate=daysFromToday(5))
         past = new(Question, title='past', startDate=daysFromToday(-4), endDate=daysFromToday(5))
 
@@ -61,25 +80,16 @@ class TestQuestionView(TestCase):
             request, template, context = views.question(None)
             self.assertEqual(self.current.title, context['question'].title)
 
-    def test_param_isActive(self):
-        with echoRender():
-            request, template, context = views.question(None, self.finished.pk)
-            self.assertFalse(context['is_active'])
-
-            request, template, context = views.question(None, self.current.pk)
-            self.assertTrue(context['is_active'])
-
     def test_not_started_question(self):
         with self.assertRaises(Http404):
             views.question(None, self.not_started.pk)
 
 
     def test_urls(self):
-        client = Client()
-        response = client.get('/question/active/')
+        response = self.client.get('/question/active/')
         self.assertEqual(200, response.status_code)
 
-        response = client.get('/question/%d/' % self.current.pk)
+        response = self.client.get('/question/%d/' % self.current.pk)
         self.assertEqual(200, response.status_code)
 
 
@@ -147,3 +157,43 @@ class TestProfileView(TestCase):
 
         otherSubs = [s.pk for s in context['submissions_to_display']]
         self.assertSequenceEqual(readySubmissions, otherSubs)
+
+
+from django.contrib.auth import SESSION_KEY
+
+class TestLogin(TestCase):
+
+    def setUp(self):
+        self.password = 'so_secure'
+        self.user = User.objects.create_user(username='JimBob', password=self.password)
+        self.profile = new(Profile, user=self.user)
+
+    def test_login_success(self):
+        response = self.client.get('/login/')
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.post('/login/', {'username': self.user.username, 'password': 'so_secure'})
+        self.assertEqual(self.client.session[SESSION_KEY], self.user.pk)
+
+    def test_login_failure(self):
+        self.client.post('/login/', {'username': self.user.username, 'password': "wrong"})
+        self.assertNotIn(SESSION_KEY, self.client.session)
+
+    def test_redirect_home(self):
+        response = self.client.post('/login/', follow=True, data={
+            'username': self.user.username,
+            'password': self.password,
+        })
+        self.assertEqual(('http://testserver/', 301), response.redirect_chain[-1])
+
+    def test_redirect(self):
+        question = new(Question)
+        redirect_target = '/question/%d/' %question.pk
+
+        response = self.client.post('/login/?next=%s'%redirect_target, follow=True, data={
+            'username': self.user.username,
+            'password': self.password,
+        })
+
+        self.assertEqual(self.client.session[SESSION_KEY], self.user.pk)
+        self.assertEqual(('http://testserver' + redirect_target, 301), response.redirect_chain[-1])

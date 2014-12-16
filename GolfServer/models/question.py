@@ -2,6 +2,8 @@ __author__ = 'Jableader'
 
 from django.contrib.admin import ModelAdmin
 from django.db import models
+from django.utils import timezone
+from django.core.exceptions import ObjectDoesNotExist
 from sponsor import Sponsor
 from datetime import datetime
 import re
@@ -27,7 +29,7 @@ class Question(models.Model):
     def __str__(self): return self.title
 
     def isActive(self):
-        return self.endDate < datetime.today <= self.startDate
+        return self.startDate <= timezone.now() < self.endDate
 
 
 class QuestionAdmin(ModelAdmin):
@@ -40,9 +42,9 @@ class QuestionAdmin(ModelAdmin):
     ]
 
 #Cache the value of the current question
-def getQuestionForDay(day):
-    questionOnDay = Question.objects \
-        .filter(endDate__gte = day) \
-        .filter(startDate__lte = day)
-    if len(questionOnDay) != 0: return questionOnDay[0]
-    else: return None
+def activeQuestion():
+    try:
+        today=timezone.now()
+        return Question.objects.get(endDate__gte = today, startDate__lte = today)
+    except ObjectDoesNotExist:
+        return None

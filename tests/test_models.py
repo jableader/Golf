@@ -1,5 +1,5 @@
 from django.test import TestCase
-from GolfServer.models import Question, getQuestionForDay
+from GolfServer.models import Question, activeQuestion
 from django.utils import timezone
 from test_suite import new, daysFromToday
 
@@ -11,6 +11,8 @@ class TestQuestion(TestCase):
         new(Question, title='current', startDate=daysFromToday(-6), endDate=daysFromToday(1)),
         new(Question, title='future', startDate=daysFromToday(1), endDate=daysFromToday(8))
 
-        question = getQuestionForDay(timezone.now())
+        question = activeQuestion()
         self.assertEqual(question.title, 'current')
 
+    def test_getCurrentQuestion_NoException(self):
+        self.assertIsNone(activeQuestion())

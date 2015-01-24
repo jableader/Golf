@@ -64,13 +64,19 @@ body {
     width: auto;
 }
 
+button.btn[type='submit'] {
+    max-width: 20em;
+    margin: 0 auto;
+    width: 50%;
+}
+
 /*
 Login Page
 */
 
 .form-signin {
     max-width: 20em;
-    margin: 0 auto;
+    margin: 1ex auto;
 }
 
 .form-signin .form-header {
@@ -86,9 +92,4 @@ Login Page
   margin-bottom: 3ex;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-}
-
-.form-signin button {
-    width: 50%;
-    margin: 0 auto;
 }

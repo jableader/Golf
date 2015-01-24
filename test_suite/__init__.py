@@ -26,6 +26,34 @@ def new(modelClass, **kwargs):
 
     return newModel
 
+def file_contents(f):
+    if type(f) is str:
+        with open(f, 'r') as file:
+            return file.read()
+
+    else: #django file
+        try:
+            f.open()
+            return f.read()
+        finally:
+            f.close()
+
+
+from os import path
+
+__django_root = path.sep.join(__file__.split(path.sep)[:-2])
+
+import os
+from GolfServer.models.profile import userDirectory
+def deleteUsersData(userOrProfile):
+    for file in os.walk(path.join(__django_root, userDirectory(userOrProfile))):
+        pass
+
+
+def asset(rel_path):
+    return path.join(__django_root, 'tests', 'test_assets', *rel_path.split('/'))
+
+
 from django.utils import timezone as __timezone
 def daysFromToday(i):
     return __timezone.now() + __timezone.timedelta(days=i)

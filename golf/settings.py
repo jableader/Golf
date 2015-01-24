@@ -81,7 +81,7 @@ TEMPLATE_DIRS = (
     os.path.join(BASE_DIR,  'templates'),
 )
 
-#Custom add ons
+LOGIN_URL = '/login/'
 
 MEDIA_ROOT = 'user_files/'
 MEDIA_URL = '/user_files/'

@@ -14,7 +14,7 @@
         <div class="row">
                 {% if question.isActive %}
                     <div class="take-me-button">
-                        <a class="btn btn-lg btn-primary" href="#">
+                        <a class="btn btn-lg btn-primary" href="{% url 'make_submission' question.pk %}">
                             Make a submission
                         </a>
                     </div>

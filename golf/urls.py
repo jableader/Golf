@@ -17,5 +17,7 @@ urlpatterns = patterns('',
     url(r'^question/(?P<question_pk>\d+)/$', golfviews.question, name='question'),
     url(r'^questions/(?P<page_number>\d+)/$', golfviews.questions, name='questions'),
     url(r'^questions/$', golfviews.questions, name='questions'),
+    url(r'^submissions/make/(?P<question_pk>\d+)$', golfviews.upload_submission, name='make_submission'),
+    url(r'^submissions/view/(?P<submission_pk>\d+)$', golfviews.view_submission, name='view_submission'),
     url(r'^admin/', include(admin.site.urls)),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

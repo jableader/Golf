@@ -1,14 +1,15 @@
-from unittest import TestCase
-import random
-from GolfServer.markers import *
 __author__ = 'Jableader'
 
-class TestLineCounter(TestCase):
-    def test_markSize(self):
-        marker = LineCounter()
-        random.seed(1234)
-        lines = [[' ', '\t']*random.randint(0, 10) for j in xrange(10)]
-        lines = map(lambda l: ''.join(l), lines)
-        lines[4] = 'print("Hello World")'
+from django.test import SimpleTestCase
+from GolfServer.models import Submission
+from GolfServer.markers import mark_size
+from test_suite import asset
+from django.core.files import File as DjangoFile
+from django.core.files.base import File as ContentFile
 
-        self.assertEqual(1, marker.marksize('\r\n'.join(lines)))
+
+class TestLineCounter(SimpleTestCase):
+
+    def test_markSizeFromFile(self):
+        with open(asset('hello_world.py'), 'r') as fp:
+            self.assertEqual(1, mark_size(Submission(file=DjangoFile(fp))))

@@ -11,7 +11,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading"><h3>Details</h3></div>
                     <table class="table submission-stats">
-                        <tr><th>Owner</th> <td> <a href="{% url 'profile' submission.owner_pk %}">{{ submission.owner.user.username }}</a></td></tr>
+                        <tr><th>Owner</th> <td> <a href="{% url 'profile' submission.owner %}">{{ submission.owner.user.username }}</a></td></tr>
                         <tr><th>Date Submitted</th> <td> {{ submission.dateSubmitted }} </td></tr>
                         <tr><th>Question</th> <td> <a href="{% url 'question' submission.question_pk %}">{{ submission.question.title }}</a></td></tr>
 

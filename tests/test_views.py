@@ -213,6 +213,7 @@ class TestViewSubmission(TestCase):
             self.assertTrue(context["isOwner"])
 
             request.user = User.objects.create_user(username="NotJimbob", password=USER_PASSWORD)
+            new(Profile, user=request.user)
             _, _, context = views.view_submission(request, submission.pk)
             self.assertFalse(context["isOwner"])
 
@@ -246,13 +247,13 @@ class TestMakeSubmission(TestCase):
         self.assertRedirects(response, '/login/?next=' + submit_url)
 
     def test_redirect_on_upload(self):
-        self.fail(msg="When a view_submission form is made, we should redirect to that")
         self.client.login(username=USER_NAME, password=USER_PASSWORD)
 
-        with open('/test_assets/hello_world.py', 'r') as fp:
+        with open(asset('hello_world.py'), 'r') as fp:
             response = self.client.post('/submissions/make/%d' % self.question.pk, {'file': fp})
+            sub = Submission.objects.get(owner=self.profile, question=self.question)
 
-            self.assertRedirects(response, 'submissions/view/%d'% None)
+            self.assertRedirects(response, 'submissions/view/%d'% sub.pk)
 
     def test_upload_sets_submission_params(self):
         self.client.login(username=USER_NAME, password=USER_PASSWORD)

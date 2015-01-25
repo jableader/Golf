@@ -5,8 +5,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django import forms
 
-from models import Question, activeQuestion, Profile, Submission
-from markers import mark_size
+from models import Question, activeQuestion, Profile, Submission, SubmissionForm
 
 HOME = 'index'
 
@@ -74,13 +73,6 @@ def logout(request):
     logoutUser(request)
     return redirect(HOME)
 
-def _create_submission(file, owner, question_pk):
-    sub = Submission.objects.create(question_id=int(question_pk), owner=owner, file=file)
-    sub.sizeScore = mark_size(sub)
-    sub.save()
-
-    return sub
-
 def view_submission(request, submission_pk):
     submission = get_object_or_404(Submission, pk=submission_pk)
     isOwner = submission.owner == request.user.profile
@@ -89,17 +81,14 @@ def view_submission(request, submission_pk):
 
 @login_required
 def upload_submission(request, question_pk):
+    question = get_object_or_404(Question, pk=question_pk)
     if request.method == 'POST':
-        form = UploadSubmissionForm(request.POST, request.FILES)
+        form = SubmissionForm(request.user.profile, question, request.POST, request.FILES)
         if form.is_valid():
-            file = request.FILES.values()[0]
-            submission = _create_submission(file, request.user.profile, question_pk)
-
+            submission = form.save()
             return redirect('view_submission', submission.pk)
     else:
-        form = UploadSubmissionForm()
+        form = SubmissionForm(request.user.profile, question)
 
-    return render(request, 'make_submission.html', {'form': form, 'question': get_object_or_404(Question, pk=question_pk)})
+    return render(request, 'make_submission.html', {'form': form, 'question': question})
 
-class UploadSubmissionForm(forms.Form):
-    file = forms.FileField(label='Your source code')

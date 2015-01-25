@@ -16,7 +16,8 @@
             </p>
         </div>
         <div class="row">
-            <form method="post" action="{% url 'make_submission' question.pk %}">
+            <form method="post" enctype="multipart/form-data" action="{% url 'make_submission' question.pk %}">
+                {% csrf_token %}
                 {{ form }}
 
                 <button class="btn btn-lg btn-primary btn-block" type="submit">

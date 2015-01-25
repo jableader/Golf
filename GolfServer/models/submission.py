@@ -3,6 +3,8 @@ __author__ = 'Jableader'
 from . import Profile, Question
 from django.db import models
 from datetime import datetime
+from django.forms import ModelForm
+
 
 import logging
 
@@ -33,3 +35,25 @@ class Submission(models.Model):
 
     def hasErrors(self):
         return self.hasBeenRun() and self.output_actual is not None
+
+
+class SubmissionForm(ModelForm):
+    class Meta:
+        model = Submission
+        fields = ['file']
+
+    def __init__(self, owner, question, *args, **kwargs):
+        super(SubmissionForm, self).__init__(*args, **kwargs)
+        self.owner = owner
+        self.question = question
+
+    def save(self):
+        sub = super(SubmissionForm, self).save(commit=False)
+        sub.owner = self.owner
+        sub.question = self.question
+
+        sub.save()
+        sub.sizeScore = self.question.marker().mark_size(sub)
+        sub.save()
+
+        return sub

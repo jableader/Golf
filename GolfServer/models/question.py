@@ -5,7 +5,8 @@ from django.db import models
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 from sponsor import Sponsor
-from datetime import datetime
+from GolfServer.markers import LineCounter
+
 import re
 
 nonWordRegex = re.compile(r'[^\w\.]')
@@ -31,6 +32,8 @@ class Question(models.Model):
     def isActive(self):
         return self.startDate <= timezone.now() < self.endDate
 
+    def marker(self):
+        return LineCounter()
 
 class QuestionAdmin(ModelAdmin):
     fieldsets = [

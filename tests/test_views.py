@@ -107,7 +107,7 @@ class TestProfileView(TestCase):
             new(Question, startDate=daysFromToday(-1), endDate=daysFromToday(8)),
         ]
 
-        user = User.objects.create_user(USER_NAME, "bj@bj.com")
+        user = User.objects.create_user(USER_NAME, USER_PASSWORD)
         profile = Profile.objects.create(user=user)
 
         self.submissions = [
@@ -145,18 +145,26 @@ class TestProfileView(TestCase):
         self.user = user
         self.profile = profile
 
+        self.request = Mock()
+        self.request.user = self.otherUser
+
+    def test_submissions_to_display_shows_own(self):
+        request = Mock()
+        request.user = self.user
+
+        context = views.profile_context(request, self.questions)
 
     def test_uniqueQuestionAttempts(self):
-        context = views.profile_context(self.user.pk)
+        context = views.profile_context(self.request, self.user.pk)
         self.assertEqual(3, context['uniqueQuestionsAttempts'])
 
 
     def test_winningSubmissions(self):
-        context = views.profile_context(self.user.pk)
+        context = views.profile_context(self.request, self.user.pk)
         self.assertEqual(2, context['winningSubmissions'])
 
     def test_submissions_to_display_is_ordered(self):
-        context = views.profile_context(self.user.pk)
+        context = views.profile_context(self.request, self.user.pk)
         readySubmissions = [s.pk for s in sorted(self.submissions, lambda x, y: x.dateSubmitted > y.dateSubmitted) if s.question.endDate < timezone.now()]
 
         otherSubs = [s.pk for s in context['submissions_to_display']]

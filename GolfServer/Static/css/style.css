@@ -93,3 +93,19 @@ Login Page
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
+
+table.source-code {
+    font-family: monospace;
+}
+
+table.source-code tr>td {
+    border-top: 0;
+    padding: 0 1em;
+}
+
+table.source-code td:first-child {
+    width: 2em;
+    background-color: lightgray;
+    font-weight: bold;
+    text-align: center;
+}

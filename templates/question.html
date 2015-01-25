@@ -21,7 +21,7 @@
                 {% else %}
                     <div class="alert alert-warning inactive-question">
                         <strong>Hey there!</strong>
-                        This question is currently not active. To view the current question click <a href="#">Here</a>
+                        This question is currently not active. To view the current question click <a href="{% url 'active_question' %}">Here</a>
                     </div>
                 {% endif %}
 

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load codify %}
 
 {% block body_block %}
     <div class="container">
@@ -11,11 +12,11 @@
             <div class="panel panel-default">
                 <div class="panel-heading"><h3>Details</h3></div>
                     <table class="table submission-stats">
-                        <tr><th>Owner</th> <td> <a href="{% url 'profile' submission.owner %}">{{ submission.owner.user.username }}</a></td></tr>
+                        <tr><th>Owner</th> <td> <a href="{% url 'profile' submission.owner.pk %}">{{ submission.owner.user.username }}</a></td></tr>
                         <tr><th>Date Submitted</th> <td> {{ submission.dateSubmitted }} </td></tr>
-                        <tr><th>Question</th> <td> <a href="{% url 'question' submission.question_pk %}">{{ submission.question.title }}</a></td></tr>
+                        <tr><th>Question</th> <td> <a href="{% url 'question' submission.question_id %}">{{ submission.question.title }}</a></td></tr>
 
-                        <tr><th>Date Run</th> <td> {{ submissions.dateRun|default_if_none:"Not yet run" }}</td></tr>
+                        <tr><th>Date Run</th> <td> {{ submission.dateRun|default_if_none:"Not yet run" }}</td></tr>
                         <tr><th>Size Score</th> <td> {{ submission.sizeScore|default_if_none:"Not yet marked" }} </td></tr>
                         <tr><th>Time Score</th> <td> {{ submission.timeScore|default_if_none:"Not yet marked" }} </td></tr>
                         <tr><th>Human Score</th> <td> {{ submission.humanScore|default_if_none:"Not yet marked" }} </td></tr>
@@ -25,8 +26,12 @@
 
             {% if isOwner or not submission.isActive %}
                 <div class="row">
-                    <div class="source-code">
-                        Source code here
+                    <div class="panel panel-default">
+                        <table class="table source-code">
+                            {% for line in submission.file.readlines %}
+                                <tr><td>{{ forloop.counter0 }}</td><td>{{ line|as_code }}</td></tr>
+                            {% endfor %}
+                        </table>
                     </div>
                 </div>
 
@@ -38,11 +43,18 @@
                         </div>
 
                         <div class="col-md-6">
-                            <h4>Your program</h4>
+                            <h4>This program</h4>
                             {{ submission.output_actual }}
                         </div>
                     </div>
                 {% endif %}
+
+            {% else %}
+                <div class="row">
+                    Sorry, you cannot view the source code for this submission because you are not the owner and the \
+                    question has not finished yet.
+                </div>
+
             {% endif %}
         </div>
     </div>

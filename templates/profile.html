@@ -2,10 +2,10 @@
 
 {% block body_block %}
     <div class="container">
-        {% if userToDisplay.profile %}
+        {% if profile %}
 
             <div class="row profile-banner">
-                <h1><img class="profile-picture" src="{{ userToDisplay.profile.image.url }}" /> {{ userToDisplay.username|title }}</h1>
+                <h1><img class="profile-picture" src="{{ profile.image.url }}" /> {{ profile.user.username|title }}</h1>
             </div>
 
             <div class="row">
@@ -14,14 +14,14 @@
                         <div class="panel-heading"><h4>Submissions</h4></div>
                         <table class="table submission-stats">
                             <tr><td>Questions Attempted</td> <td> {{ uniqueQuestionsAttempts }} </td></tr>
-                            <tr><td>Total Submissions</td> <td> {{ submissions_to_display|length }} </td></tr>
+                            <tr><td>Total Submissions</td> <td> {{ submissions|length }} </td></tr>
                             <tr><td>Winning Submissions</td> <td> {{ winningSubmissions }} </td></tr>
                         </table>
                     </div>
 
                     <div class="panel panel-default">
                         <div class="panel-heading"><h4>Badges</h4></div>
-                        {% for badge in userToDisplay.profile.badges_set %}
+                        {% for badge in profile.badges_set %}
                             <div><b>Badge</b> {{ badge.name }}</div>
                         {% empty %}
                             <div class="panel-body">This user doesn't have any badges yet. Better get cracking!</div>
@@ -33,14 +33,13 @@
                     <div class="panel panel-default">
                         <div class="panel-heading"><h3>Submissions</h3></div>
 
-                        {% if submissions_to_display|length_is:0 %}
+                        {% if submissions|length_is:0 %}
                             <div class="panel-body">Looks like this user has no submissions</div>
                         {% else %}
                             <table class="table">
                                 <thead>
                                 <tr>
                                     <th>Question</th>
-                                    <th>Language</th>
                                     <th>Date</th>
                                     <th>Size</th>
                                     <th>Time</th>
@@ -50,18 +49,23 @@
                                 </thead>
 
                                 <tbody>
-                                {% for submission in submissions_to_display %}
+                                {% for submission in submissions %}
                                     <tr>
                                         <td>
                                             {% ifchanged submission.question.title %}
                                                 <a href="{% url 'question' submission.question.pk %}">{{ submission.question.title }}</a>
                                             {% endifchanged %}
                                         </td>
-                                        <td>{{ submission.language }}</td>
-                                        <td>{{ submission.date }}</td>
+                                        <td>{{ submission.dateSubmitted }}</td>
                                         <td>{{ submission.sizeScore }}</td>
                                         <td>{{ submission.timeScore }}</td>
                                         <td>{{ submission.humanScore }}</td>
+                                        <td>
+                                            <a href="{% url 'view_submission' submission.pk %}">
+                                                <span class="glyphicon glyphicon-eye-open"></span>
+                                                View
+                                            </a>
+                                        </td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>

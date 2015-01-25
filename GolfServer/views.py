@@ -21,19 +21,18 @@ def question(request, question_pk = None):
 
     return render(request, 'question.html', {'question': q})
 
-def profile_context(user_pk):
-    userToDisplay = get_object_or_404(Profile, user_id=user_pk).user
-    userSubmissions = userToDisplay.profile.submission_set.filter(question__endDate__lte = timezone.now()).order_by('dateSubmitted')
+def profile_context(request, profile_pk):
+    profile = get_object_or_404(Profile, pk=profile_pk)
 
     return {
-        'userToDisplay': userToDisplay,
-        'submissions_to_display': userSubmissions,
+        'profile': profile,
+        'submissions': profile.submission_set.all().order_by('dateSubmitted'),
         'uniqueQuestionsAttempts': 0,
         'winningSubmissions': 0,
     }
 
 def profile(request, user_pk):
-    return render(request, 'profile.html', profile_context(user_pk))
+    return render(request, 'profile.html', profile_context(request, user_pk))
 
 SIBLINGS_IN_VIEW = 3
 def questions(request, page_number=1, questions_per_page=15):

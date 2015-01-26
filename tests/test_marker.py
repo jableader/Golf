@@ -7,7 +7,6 @@ from test_suite import asset
 from django.core.files import File as DjangoFile
 from django.core.files.base import File as ContentFile
 
-
 class TestLineCounter(SimpleTestCase):
 
     def test_markSizeFromFile(self):

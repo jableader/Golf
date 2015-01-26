@@ -109,3 +109,11 @@ table.source-code td:first-child {
     font-weight: bold;
     text-align: center;
 }
+
+table.source-code tr:first-child td {
+    padding-top: 1ex;
+}
+
+table.source-code tr:last-child td {
+    padding-bottom: 1ex;
+}

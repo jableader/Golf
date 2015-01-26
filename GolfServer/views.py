@@ -21,15 +21,17 @@ def question(request, question_pk = None):
 
     return render(request, 'question.html', {'question': q})
 
-def profile(request, profile_pk):
-    p =  get_object_or_404(Profile, pk=profile_pk)
-
-    return render(request, 'profile.html', {
-        'profile': p,
-        'submissions': p.submission_set.all().order_by('dateSubmitted'),
+def profile_context(profile):
+    return {
+        'profile': profile,
+        'submissions': profile.submission_set.all().order_by('dateSubmitted'),
         'uniqueQuestionsAttempts': 0,
         'winningSubmissions': 0,
-    })
+    }
+
+def profile(request, profile_pk):
+    p =  get_object_or_404(Profile, pk=profile_pk)
+    return render(request, 'profile.html', profile_context(p))
 
 SIBLINGS_IN_VIEW = 3
 def questions(request, page_number=1, questions_per_page=15):
@@ -71,7 +73,7 @@ def logout(request):
 
 def view_submission(request, submission_pk):
     submission = get_object_or_404(Submission, pk=submission_pk)
-    isOwner = hasattr(request.user, 'profile') and submission.owner == request.user.profile
+    isOwner = request.user.is_authenticated() and  hasattr(request.user, 'profile') and submission.owner == request.user.profile
 
     return render(request, 'view_submission.html', {"isOwner": isOwner, "submission": submission})
 
@@ -87,4 +89,3 @@ def upload_submission(request, question_pk):
         form = SubmissionForm(request.user.profile, question)
 
     return render(request, 'make_submission.html', {'form': form, 'question': question})
-

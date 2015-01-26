@@ -148,27 +148,20 @@ class TestProfileView(TestCase):
         self.request = Mock()
         self.request.user = self.otherUser
 
-    def test_submissions_to_display_shows_own(self):
-        request = Mock()
-        request.user = self.user
-
-        context = views.profile_context(request, self.questions)
-
     def test_uniqueQuestionAttempts(self):
-        context = views.profile_context(self.request, self.user.pk)
+        context = views.profile_context(self.profile)
         self.assertEqual(3, context['uniqueQuestionsAttempts'])
 
-
     def test_winningSubmissions(self):
-        context = views.profile_context(self.request, self.user.pk)
+        context = views.profile_context(self.profile)
         self.assertEqual(2, context['winningSubmissions'])
 
     def test_submissions_to_display_is_ordered(self):
-        context = views.profile_context(self.request, self.user.pk)
-        readySubmissions = [s.pk for s in sorted(self.submissions, lambda x, y: x.dateSubmitted > y.dateSubmitted) if s.question.endDate < timezone.now()]
+        context = views.profile_context(self.profile)
+        sortedSubmissions = [s.pk for s in sorted(self.submissions, lambda x, y: x.dateSubmitted > y.dateSubmitted)]
 
-        otherSubs = [s.pk for s in context['submissions_to_display']]
-        self.assertSequenceEqual(readySubmissions, otherSubs)
+        otherSubs = [s.pk for s in context['submissions']]
+        self.assertSequenceEqual(sortedSubmissions, otherSubs)
 
 
 from django.contrib.auth import SESSION_KEY

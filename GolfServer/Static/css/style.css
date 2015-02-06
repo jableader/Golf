@@ -98,6 +98,22 @@ table.source-code {
     font-family: monospace;
 }
 
+.source-code .keyword {
+    color: blue;
+}
+
+.source-code .string {
+    color: magenta;
+}
+
+.source-code .comment {
+    color: green;
+}
+
+.source-code .digit {
+    color: blueviolet;
+}
+
 table.source-code tr>td {
     border-top: 0;
     padding: 0 1em;

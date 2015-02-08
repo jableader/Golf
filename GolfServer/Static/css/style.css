@@ -107,7 +107,7 @@ table.source-code {
 }
 
 .source-code .comment {
-    color: green;
+    color: limegreen;
 }
 
 .source-code .digit {

@@ -21,3 +21,6 @@ class TestTestingFramework(TestCase):
         sponsor = test_suite.new(models.Sponsor, name="MickySoft")
         question = test_suite.new(models.Question, sponsor=sponsor)
         self.assertEqual("MickySoft", question.sponsor.name)
+
+    def test_user_dependancy(self):
+        self.assertIsNotNone(test_suite.new(models.Profile).user)

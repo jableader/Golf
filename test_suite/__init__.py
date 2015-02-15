@@ -1,17 +1,47 @@
 __author__ = 'Jableader'
-from django.utils.timezone import datetime
+from django.utils.timezone import datetime, make_aware, get_current_timezone
 from django.db import models
 from mock import patch
 
+USERNAME = 'JimBob'
+PASSWORD = 'SoSecure'
+
+class FieldManager:
+    def __init__(self, field, generator, initial_value=None):
+        self.field = field
+        if callable(generator):
+            self.get_next = generator
+            self._value = initial_value
+        else:
+            self.get_next = None
+            self._value = generator
+
+        if field.unique and not self.get_next:
+            raise Exception("Must provide a generator for unique field %s" % field.name)
+
+    def next(self):
+        if self.get_next is not None:
+            self._value = self.get_next(self._value)
+        return self._value
+
+_managers = {}
+def get_manager(field):
+    if field in _managers:
+        return _managers[field]
+
+    if isinstance(field, models.IntegerField): manager = FieldManager(field, lambda i: i+1, 0)
+    elif isinstance(field, models.BooleanField): manager = FieldManager(field, True)
+    elif isinstance(field, models.DateField): manager = FieldManager(field, make_aware(datetime(2014, 12, 23, 7), timezone=get_current_timezone()))
+    elif isinstance(field, models.ManyToManyField): manager = FieldManager(field, None)
+    elif isinstance(field, models.FileField): manager = FieldManager(field, '/static/img/logo_small_white.png')
+    elif isinstance(field, models.ForeignKey): manager = FieldManager(field, lambda x: new(field.related.parent_model))
+    else: manager = FieldManager(field, lambda s: s + 'a', 'a')
+
+    _managers[field] = manager
+    return manager
+
 def _field_value(field):
-    ftype = type(field)
-    if ftype is models.IntegerField: return 0
-    if ftype is models.BooleanField: return False
-    if ftype is models.DateTimeField: return datetime(2014, 12, 12, 12)
-    if ftype is models.ForeignKey: return new(field.related.parent_model)
-    if ftype is models.ManyToManyField: return None
-    if ftype is models.FileField: return '/static/img/logo_small_white.png'
-    return ''
+    return get_manager(field).next()
 
 def echoRender():
     return patch('GolfServer.views.render', lambda *args: args)

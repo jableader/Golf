@@ -98,8 +98,22 @@ class TestQuestionView(TestCase):
         self.assertEqual(200, response.status_code)
 
 
+def sub(owner, question, score):
+    return Submission.objects.create(
+        question = question,
+        dateSubmitted = question.startDate + timedelta(days=1),
+        dateRun = question.startDate + timedelta(days=2),
+        owner = owner,
+        sizeScore = score,
+        timeScore = score,
+        humanScore = score
+    )
+
 class TestProfileView(TestCase):
+
+
     def setUp(self):
+        global sub
         questions = [
             new(Question, startDate=daysFromToday(-20), endDate=daysFromToday(-13)),
             new(Question, startDate=daysFromToday(-13), endDate=daysFromToday(-6)),
@@ -110,43 +124,25 @@ class TestProfileView(TestCase):
         user = User.objects.create_user(USER_NAME, USER_PASSWORD)
         profile = Profile.objects.create(user=user)
 
-        self.submissions = [
-            new(Submission, question=questions[0], owner=profile, dateSubmitted=questions[0].startDate + timedelta(days=1)),
-            new(Submission, question=questions[0], owner=profile, dateSubmitted=questions[0].startDate + timedelta(days=2)),
-            new(Submission, question=questions[1], owner=profile, dateSubmitted=questions[1].startDate + timedelta(days=1)),
-            new(Submission, question=questions[3], owner=profile, dateSubmitted=questions[3].startDate + timedelta(days=1)),
-        ]
-
-        # q : score
-        #0 : 150 (win), 300
-        #1 : 450 (lose)
+       # q : score
+        #0 : 50 (win), 100
+        #1 : 100 (lose)
         #2 : No submission
-        #3 : 600 (win by default)
-        for i, sub in enumerate(self.submissions):
-            sub.sizeScore = sub.humanScore = sub.timeScore = (i + 1) * 50
+        #3 : 200 (still active)
+        self.submissions = [sub(profile, questions[q_id], i*50) for i, q_id in enumerate([0, 0, 1, 3])]
 
         self.otherUser = User.objects.create_user("Bazza", "baz@bj.com")
         self.otherProfile = Profile.objects.create(user=self.otherUser)
 
-        self.otherSubmissions = [
-            new(Submission, question=questions[0], owner=self.otherProfile, dateSubmitted=questions[0].startDate + timedelta(days=1)),
-            new(Submission, question=questions[1], owner=self.otherProfile, dateSubmitted=questions[1].startDate + timedelta(days=1)),
-            new(Submission, question=questions[2], owner=self.otherProfile, dateSubmitted=questions[2].startDate + timedelta(days=1)),
-        ]
-
         #q : score
-        #0 : 165 (lose)
-        #1 : 330 (win)
-        #2 : 445 (win by default)
-        for i, sub in enumerate(self.otherSubmissions):
-            sub.sizeScore = sub.humanScore = sub.timeScore = (i + 1) * 55
+        #0 : 55 (lose)
+        #1 : 110 (win)
+        #2 : 165 (win by default)
+        self.otherSubmissions = [sub(self.otherProfile, questions[q_id], 55*i) for i, q_id in enumerate([0, 1, 2])]
 
         self.questions = questions
         self.user = user
         self.profile = profile
-
-        self.request = Mock()
-        self.request.user = self.otherUser
 
     def test_uniqueQuestionAttempts(self):
         context = views.profile_context(self.profile)
@@ -154,7 +150,7 @@ class TestProfileView(TestCase):
 
     def test_winningSubmissions(self):
         context = views.profile_context(self.profile)
-        self.assertEqual(2, context['winningSubmissions'])
+        self.assertEqual(1, context['winningSubmissions'])
 
     def test_submissions_to_display_is_ordered(self):
         context = views.profile_context(self.profile)
@@ -162,7 +158,6 @@ class TestProfileView(TestCase):
 
         otherSubs = [s.pk for s in context['submissions']]
         self.assertSequenceEqual(sortedSubmissions, otherSubs)
-
 
 from django.contrib.auth import SESSION_KEY
 
@@ -185,6 +180,7 @@ class TestLogin(TestCase):
         self.assertNotIn(SESSION_KEY, self.client.session)
 
     def test_redirect_home(self):
+        q1, q2 = new(Question), new(Question)
         response = self.client.post('/login/', data={
             'username': USER_NAME,
             'password': USER_PASSWORD,
@@ -268,3 +264,19 @@ class TestMakeSubmission(TestCase):
         self.assertEqual(1, submission.sizeScore)
         self.assertEqual(file_contents(asset('hello_world.py')), file_contents(submission.file))
 
+class IndexTest(TestCase):
+    def test_recent_questions(self):
+        qs = [
+            new(Question, title='-1', startDate=daysFromToday(4), endDate=daysFromToday(10)),
+            new(Question, title='1', startDate=daysFromToday(-10), endDate=daysFromToday(-3)),
+            new(Question, title='3', startDate=daysFromToday(-15), endDate=daysFromToday(-20)),
+            new(Question, title='0', startDate=daysFromToday(-3), endDate=daysFromToday(4)),
+            new(Question, title='2', startDate=daysFromToday(-15), endDate=daysFromToday(-10)),
+        ]
+
+        recent = sorted(qs, lambda x, y: cmp(y.startDate, x.startDate))[1:3]
+
+        with echoRender():
+            _, _, context = views.index(None)
+        self.assertEqual(recent[0], context['question'])
+        self.assertEqual(recent[1], context['lastQuestion'])

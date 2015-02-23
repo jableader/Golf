@@ -21,11 +21,23 @@ def question(request, question_pk = None):
     return render(request, 'question.html', {'question': q})
 
 def profile_context(profile):
+    submissions = profile.submission_set.all().order_by('dateSubmitted')
+    uniqueQuestions, winningSubs = 0, 0
+
+    last_q = None
+    for sub in submissions:
+        if sub.question != last_q:
+            uniqueQuestions += 1
+            last_q = sub.question
+
+        if sub == sub.question.winner():
+            winningSubs += 1
+
     return {
         'profile': profile,
         'submissions': profile.submission_set.all().order_by('dateSubmitted'),
-        'uniqueQuestionsAttempts': 0,
-        'winningSubmissions': 0,
+        'uniqueQuestionsAttempts': uniqueQuestions,
+        'winningSubmissions': winningSubs,
     }
 
 def profile(request, profile_pk):
@@ -48,7 +60,9 @@ def questions(request, page_number=1, questions_per_page=15):
     return render(request, 'all_questions.html', {'questions': qs, 'startDate': start, 'endDate': end, 'sibling_pages': siblings})
 
 def index(request):
-    return render(request, 'index.html', {'question': activeQuestion()})
+    recent_questions = Question.objects.filter(startDate__lte=timezone.now()).order_by('-startDate')[:3]
+
+    return render(request, 'index.html', {'questions': recent_questions})
 
 def login_form(request):
     if request.user.is_authenticated():
@@ -65,6 +79,8 @@ def login_form(request):
 
     return render(request, 'login_form.html', context)
 
+def faq(request):
+    return render(request, 'faq.html')
 
 def logout(request):
     logoutUser(request)

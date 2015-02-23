@@ -27,11 +27,7 @@
             {% if isOwner or not submission.isActive %}
                 <div class="row">
                     <div class="panel panel-default">
-                        <table class="table source-code">
-                            {% for line in submission.file.readlines %}
-                                <tr><td>{{ forloop.counter0 }}</td><td>{{ line|as_code }}</td></tr>
-                            {% endfor %}
-                        </table>
+                        {{ submission.file.read|prism }}
                     </div>
                 </div>
 

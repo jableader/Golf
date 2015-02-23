@@ -24,7 +24,7 @@ def format(s):
 
     if s == '':
         return ''
-    if s[0] in ('\r', '\n'):
+    if s[0] == '\r':
         return format(s[1:])
     elif s[0] == '\t':
         cnt = count('\t')
@@ -54,3 +54,11 @@ def format(s):
 @register.filter
 def as_code(value):
     return mark_safe(format(value))
+
+@register.filter
+def prism_inline(value, language="python"):
+    return mark_safe('<code class="language-%s">%s</code>' % (escape(language), escape(value)))
+
+@register.filter
+def prism(value, language="python"):
+    return mark_safe('<pre class="line-numbers"><code class="language-%s">%s</code></pre>' % (escape(language), escape(value)))

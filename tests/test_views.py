@@ -128,7 +128,7 @@ class TestProfileView(TestCase):
         #0 : 50 (win), 100
         #1 : 100 (lose)
         #2 : No submission
-        #3 : 200 (still active)
+        #3 : 200 (still active, winning)
         self.submissions = [sub(profile, questions[q_id], i*50) for i, q_id in enumerate([0, 0, 1, 3])]
 
         self.otherUser = User.objects.create_user("Bazza", "baz@bj.com")
@@ -150,7 +150,7 @@ class TestProfileView(TestCase):
 
     def test_winningSubmissions(self):
         context = views.profile_context(self.profile)
-        self.assertEqual(1, context['winningSubmissions'])
+        self.assertEqual(2, context['winningSubmissions'])
 
     def test_submissions_to_display_is_ordered(self):
         context = views.profile_context(self.profile)
@@ -274,9 +274,11 @@ class IndexTest(TestCase):
             new(Question, title='2', startDate=daysFromToday(-15), endDate=daysFromToday(-10)),
         ]
 
-        recent = sorted(qs, lambda x, y: cmp(y.startDate, x.startDate))[1:3]
-
         with echoRender():
             _, _, context = views.index(None)
-        self.assertEqual(recent[0], context['question'])
-        self.assertEqual(recent[1], context['lastQuestion'])
+
+        context_qs = [q.pk for q in context['questions']]
+        recent_qs = [q.pk for q in sorted(qs, lambda x, y: cmp(y.startDate, x.startDate))[1:1+len(context_qs)]]
+
+        self.assertTrue(len(context_qs) > 0)
+        self.assertEqual(recent_qs, context_qs)

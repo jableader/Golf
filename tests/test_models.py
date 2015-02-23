@@ -19,8 +19,8 @@ class TestQuestion(TestCase):
         self.assertIsNone(activeQuestion())
 
     def test_winner_with_no_subs(self):
-        q = new(Question)
-        self.assertEqual("pre: No subs", 0, q.submission_set.count())
+        q = new(Question, pk=1234)
+        self.assertEqual(0, q.submission_set.count(), msg="pre: No subs")
         self.assertIsNone(q.winner())
 
     def test_winner(self):

@@ -2,6 +2,7 @@ __author__ = 'Jableader'
 
 from django.contrib.admin import ModelAdmin
 from django.db import models
+from django.core.cache import cache
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 from sponsor import Sponsor
@@ -34,6 +35,23 @@ class Question(models.Model):
 
     def marker(self):
         return LineCounter()
+
+    def winner(self):
+        winner = cache.get(self.pk)
+
+        if winner is None:
+            try:
+                winner = self.submission_set\
+                    .filter(dateRun__isnull=False)\
+                    .extra(select={'totalScore': 'sizeScore+timeScore+humanScore'})\
+                    .order_by('totalScore')[0]
+
+                timeout = 60 if self.isActive() else None
+                cache.set(self.pk, winner, timeout)
+            except IndexError:
+                pass #There is no submissions.
+
+        return winner
 
 class QuestionAdmin(ModelAdmin):
     fieldsets = [

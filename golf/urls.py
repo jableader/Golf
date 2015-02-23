@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^$', golfviews.index, name='index'),
+    url(r'^faq/$', golfviews.faq, name='faq'),
     url(r'^login/$', golfviews.login_form, name='login'),
     url(r'^logout/$', golfviews.logout, name='logout'),
     url(r'^users/profile/(?P<profile_pk>\d+)/$', golfviews.profile, name='profile'),

@@ -8,7 +8,9 @@
         </div>
 
         <div class="row">
-            {{ question.full_description|safe }}
+            <div style="padding: 0 15px">
+                {{ question.full_description|safe }}
+            </div>
         </div>
 
         <div class="row">
@@ -19,9 +21,10 @@
                         </a>
                     </div>
                 {% else %}
-                    <div class="alert alert-warning inactive-question">
-                        <strong>Hey there!</strong>
-                        This question is currently not active. To view the current question click <a href="{% url 'active_question' %}">Here</a>
+                    <div class="take-me-button">
+                        <a class="btn btn-lg btn-success" href="{% url 'view_submission' question.winner.pk %}">
+                            View the winning submission by <b>{{ question.winner.owner.user.username }}</b>
+                        </a>
                     </div>
                 {% endif %}
 

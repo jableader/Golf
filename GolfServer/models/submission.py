@@ -36,6 +36,9 @@ class Submission(models.Model):
     def hasErrors(self):
         return self.hasBeenRun() and self.output_actual is not None
 
+    def __str__(self):
+        return "Sub{%s, %d|%d|%d)" % (self.question.title, self.sizeScore, self.timeScore, self.humanScore)
+
 
 class SubmissionForm(ModelForm):
     class Meta:

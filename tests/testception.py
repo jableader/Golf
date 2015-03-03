@@ -2,7 +2,7 @@ __author__ = 'Jableader'
 
 from django.test import TestCase
 import test_suite
-from GolfServer import models
+from golfsite import models
 
 class TestTestingFramework(TestCase):
 

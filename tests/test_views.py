@@ -7,8 +7,8 @@ from django.utils import timezone
 from django.http import Http404
 from mock import patch, Mock
 
-from GolfServer.models import Question, Submission, Profile
-from GolfServer import views
+from golfsite.models import Question, Submission, Profile
+from golfsite import views
 
 from test_suite import new, daysFromToday, echoRender, asset, deleteUsersData, file_contents
 

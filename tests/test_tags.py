@@ -1,6 +1,6 @@
 __author__ = 'Jableader'
 from django.test import SimpleTestCase
-from GolfServer.templatetags.codify import as_code, format
+from golfsite.templatetags.codify import as_code, format
 from keyword import kwlist
 import re
 

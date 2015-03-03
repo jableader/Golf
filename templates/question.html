@@ -20,10 +20,10 @@
                             Make a submission
                         </a>
                     </div>
-                {% else %}
+                {% elif question.winner %}
                     <div class="take-me-button">
                         <a class="btn btn-lg btn-success" href="{% url 'view_submission' question.winner.pk %}">
-                            View the winning submission by <b>{{ question.winner.owner.user.username }}</b>
+                            View the winning submission by <b>{{ question.winner.username }}</b>
                         </a>
                     </div>
                 {% endif %}
@@ -37,7 +37,8 @@
         </div>
 
         <div class="row">
-            A discussion will go here
+            {% load disqus_tags %}
+            {% disqus_show_comments %}
         </div>
     </div>
 

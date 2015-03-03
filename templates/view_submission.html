@@ -11,47 +11,51 @@
         <div class="row">
             <div class="panel panel-default">
                 <div class="panel-heading"><h3>Details</h3></div>
-                    <table class="table submission-stats">
-                        <tr><th>Owner</th> <td> <a href="{% url 'profile' submission.owner.pk %}">{{ submission.owner.user.username }}</a></td></tr>
-                        <tr><th>Date Submitted</th> <td> {{ submission.dateSubmitted }} </td></tr>
-                        <tr><th>Question</th> <td> <a href="{% url 'question' submission.question_id %}">{{ submission.question.title }}</a></td></tr>
+                <table class="table submission-stats">
+                    <tr><th>Owner</th> <td> <a href="{% url 'profile' submission.owner.pk %}">{{ submission.owner.user.username }}</a></td></tr>
+                    <tr><th>Date Submitted</th> <td> {{ submission.dateSubmitted }} </td></tr>
+                    <tr><th>Question</th> <td> <a href="{% url 'question' submission.question_id %}">{{ submission.question.title }}</a></td></tr>
 
-                        <tr><th>Date Run</th> <td> {{ submission.dateRun|default_if_none:"Not yet run" }}</td></tr>
-                        <tr><th>Size Score</th> <td> {{ submission.sizeScore|default_if_none:"Not yet marked" }} </td></tr>
-                        <tr><th>Time Score</th> <td> {{ submission.timeScore|default_if_none:"Not yet marked" }} </td></tr>
-                        <tr><th>Human Score</th> <td> {{ submission.humanScore|default_if_none:"Not yet marked" }} </td></tr>
-                    </table>
+                    <tr><th>Date Run</th> <td> {{ submission.dateRun|default_if_none:"Not yet run" }}</td></tr>
+                    <tr><th>Size Score</th> <td> {{ submission.sizeScore|default_if_none:"Not yet marked" }} </td></tr>
+                    <tr><th>Time Score</th> <td> {{ submission.timeScore|default_if_none:"Not yet marked" }} </td></tr>
+                    <tr><th>Human Score</th> <td> {{ submission.humanScore|default_if_none:"Not yet marked" }} </td></tr>
+                </table>
+            </div>
+        </div>
+
+        {% if isOwner or not submission.question.isActive %}
+            <div class="row">
+                <div class="panel panel-default">
+                    {{ submission.file.read|prism }}
                 </div>
             </div>
 
-            {% if isOwner or not submission.isActive %}
+            {% if submission.hasErrors %}
                 <div class="row">
-                    <div class="panel panel-default">
-                        {{ submission.file.read|prism }}
+                    <div class="col-md-6">
+                        <h4>Expected</h4>
+                        {{ submission.output_expected }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <h4>This program</h4>
+                        {{ submission.output_actual }}
                     </div>
                 </div>
-
-                {% if submission.hasErrors %}
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h4>Expected</h4>
-                            {{ submission.output_expected }}
-                        </div>
-
-                        <div class="col-md-6">
-                            <h4>This program</h4>
-                            {{ submission.output_actual }}
-                        </div>
-                    </div>
-                {% endif %}
-
-            {% else %}
-                <div class="row">
-                    Sorry, you cannot view the source code for this submission because you are not the owner and the \
-                    question has not finished yet.
-                </div>
-
             {% endif %}
+
+        {% else %}
+            <div class="row">
+                Sorry, you cannot view the source code for this submission because you are not the owner and the \
+                question has not finished yet.
+            </div>
+        {% endif %}
+
+        <div class="row">
+            {% load disqus_tags %}
+            {% disqus_show_comments %}
         </div>
     </div>
+
 {% endblock %}

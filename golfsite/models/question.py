@@ -6,7 +6,7 @@ from django.core.cache import cache
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 from sponsor import Sponsor
-from GolfServer.markers import LineCounter
+from golfsite.markers import LineCounter
 
 import re
 
@@ -21,7 +21,7 @@ class Question(models.Model):
     title = models.CharField(max_length=108)
     sponsor = models.ForeignKey(Sponsor, blank=False, null=False)
     prize = models.CharField(max_length=256)
-    short_description = models.CharField(max_length=256)
+    short_description = models.TextField(max_length=512)
     full_description = models.TextField()
     startDate = models.DateTimeField()
     endDate = models.DateTimeField()
@@ -36,6 +36,7 @@ class Question(models.Model):
     def marker(self):
         return LineCounter()
 
+    @property
     def winner(self):
         winner = cache.get(self.pk)
 
@@ -55,10 +56,10 @@ class Question(models.Model):
 
 class QuestionAdmin(ModelAdmin):
     fieldsets = [
-        (None, {'fields': ['title', 'short_description']}),
+        (None, {'fields': ['title']}),
         ('Sponsorship', {'fields': ['sponsor', 'prize']}),
         (None, {'fields': ['startDate', 'endDate']}),
-        (None, {'fields': ['full_description'], 'classes': ['wide']}),
+        ('Description', {'fields': ['short_description', 'full_description'], 'classes': ['wide']}),
         ('Validation', {'fields': ['inputGenerator', 'outputGenerator']}),
     ]
 

@@ -5,7 +5,7 @@
         {% if profile %}
 
             <div class="row profile-banner">
-                <h1><img class="profile-picture" src="{{ profile.image.url }}" /> {{ profile.user.username|title }}</h1>
+                <h1><img class="profile-picture" src="{{ profile.image.url }}" /> {{ profile.username|title }}</h1>
             </div>
 
             <div class="row">
@@ -21,11 +21,7 @@
 
                     <div class="panel panel-default">
                         <div class="panel-heading"><h4>Badges</h4></div>
-                        {% for badge in profile.badges_set %}
-                            <div><b>Badge</b> {{ badge.name }}</div>
-                        {% empty %}
-                            <div class="panel-body">This user doesn't have any badges yet. Better get cracking!</div>
-                        {% endfor %}
+                        <div class="panel-body">This user doesn't have any badges yet. Better get cracking!</div>
                     </div>
                 </div>
 

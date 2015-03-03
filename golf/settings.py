@@ -34,7 +34,9 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'GolfServer',
+    'django.contrib.sites',
+    'brabeion',
+    'golfsite',
     'disqus',
 )
 
@@ -87,5 +89,5 @@ MEDIA_ROOT = 'user_files/'
 MEDIA_URL = '/user_files/'
 
 #diqus
-
-DISQUS_WEBSITE_SHORTNAME = 'Code Golf'
+DISQUS_WEBSITE_SHORTNAME = 'codegolf'
+SITE_ID = 1

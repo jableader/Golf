@@ -1,8 +1,7 @@
 from django.test import TestCase
 from django.utils import timezone
-from GolfServer.models import Question, activeQuestion, Submission
+from golfsite.models import Question, activeQuestion, Submission
 from test_suite import new, daysFromToday
-
 
 __author__ = 'Jableader'
 
@@ -21,7 +20,7 @@ class TestQuestion(TestCase):
     def test_winner_with_no_subs(self):
         q = new(Question, pk=1234)
         self.assertEqual(0, q.submission_set.count(), msg="pre: No subs")
-        self.assertIsNone(q.winner())
+        self.assertIsNone(q.winner)
 
     def test_winner(self):
         question = new(Question)
@@ -36,11 +35,11 @@ class TestQuestion(TestCase):
             new(Submission, question=question, sizeScore=2, humanScore=2, timeScore=2, dateRun=None)
         )
 
-        self.assertEqual(winner, question.winner())
+        self.assertEqual(winner, question.winner)
 
     def test_winner_2(self):
         q = new(Question)
 
         subs = [new(Submission, question=q, sizeScore=i, timeScore=i**2, humanScore=i**3, dateRun=timezone.now()) for i in range(10, 1, -1)]
-        self.assertEqual(subs[0], q.winner())
+        self.assertEqual(subs[0], q.winner)
 

@@ -44,7 +44,7 @@ def _field_value(field):
     return get_manager(field).next()
 
 def echoRender():
-    return patch('GolfServer.views.render', lambda *args: args)
+    return patch('golfsite.views.render', lambda *args: args)
 
 def new(modelClass, **kwargs):
     fields = modelClass._meta.fields
@@ -74,7 +74,7 @@ from os import path
 __django_root = path.sep.join(__file__.split(path.sep)[:-2])
 
 import os
-from GolfServer.models.profile import userDirectory
+from golfsite.models.profile import userDirectory
 def deleteUsersData(userOrProfile):
     for file in os.walk(path.join(__django_root, userDirectory(userOrProfile))):
         pass

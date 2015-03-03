@@ -30,7 +30,7 @@ def profile_context(profile):
             uniqueQuestions += 1
             last_q = sub.question
 
-        if sub == sub.question.winner():
+        if sub == sub.question.winner:
             winningSubs += 1
 
     return {

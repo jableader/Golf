@@ -135,6 +135,11 @@ table.source-code tr:last-child td {
     padding-bottom: 1ex;
 }
 
+.edit-profile {
+    float: right;
+    margin-bottom: 3ex;
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {

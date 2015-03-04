@@ -6,9 +6,14 @@
 
             <div class="row profile-banner">
                 <h1><img class="profile-picture" src="{{ profile.image.url }}" /> {{ profile.username|title }}</h1>
+
+                {% if isMyProfile %}
+                    <a class="edit-profile" href="{% url 'edit_profile' %}">Edit my profile</a>
+                {% endif %}
             </div>
 
             <div class="row">
+
                 <div class="col-md-4">
                     <div class="panel panel-default">
                         <div class="panel-heading"><h4>Submissions</h4></div>

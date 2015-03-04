@@ -20,7 +20,7 @@ def question(request, question_pk = None):
 
     return render(request, 'question.html', {'question': q})
 
-def profile_context(profile):
+def profile_context(request, profile):
     submissions = profile.submission_set.all().order_by('dateSubmitted')
     uniqueQuestions, winningSubs = 0, 0
 
@@ -38,11 +38,15 @@ def profile_context(profile):
         'submissions': profile.submission_set.all().order_by('dateSubmitted'),
         'uniqueQuestionsAttempts': uniqueQuestions,
         'winningSubmissions': winningSubs,
+        'isMyProfile': profile.user == request.user
     }
 
 def profile(request, profile_pk):
     p =  get_object_or_404(Profile, pk=profile_pk)
-    return render(request, 'profile.html', profile_context(p))
+    return render(request, 'profile.html', profile_context(request, p))
+
+def edit_profile(request):
+    return profile(request, request.user.profile)
 
 SIBLINGS_IN_VIEW = 3
 def questions(request, page_number=1, questions_per_page=15):
